@@ -1,0 +1,96 @@
+﻿<h3>Create tournament</h3>
+<hr />
+
+<form id="eventForm">
+    <input id="eventInput" type="text" class="form-control" />
+    <br />
+    <button type="submit" class="btn btn-primary">Submit event</button>
+</form>
+<hr />
+
+<h3>Manage Store</h3>
+<hr />
+
+<form id="manageStoreForm">
+    <input id="manageStoreInput" type="text" class="form-control" />
+    <br />
+    <button type="submit" class="btn btn-primary">Submit Store</button>
+</form>
+<hr />
+
+<h3>Create Daily Task</h3>
+<hr />
+
+<form id="assignDailyForm">
+    <input id="assignDailyInput" type="text" class="form-control" />
+    <br />
+    <button type="submit" class="btn btn-primary">Submit Daily Task</button>
+</form>
+
+<hr />
+
+<h4>Current tournament</h4>
+
+<table class="table">
+    <tbody id="tournamentTable"></tbody>
+</table>
+
+<script>
+    document.getElementById('eventForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const value = document.getElementById('eventInput').value.trim();
+        if (!value) return;
+
+        
+        document.getElementById('tournamentTable').innerHTML = `
+            <tr>
+                <td>${value}</td>
+            </tr>
+        `;
+    });
+</script>
+
+<h4>Current Store</h4>
+
+<table class="table">
+    <tbody id="storeTable"></tbody>
+</table>
+
+<script>
+    document.getElementById('manageStoreForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const value = document.getElementById('manageStoreInput').value.trim();
+        if (!value) return;
+
+        
+        document.getElementById('storeTable').innerHTML = `
+            <tr>
+                <td>${value}</td>
+            </tr>
+        `;
+    });
+</script>
+
+<h4>Current Daily Task</h4>
+
+<table class="table">
+    <tbody id="DailyTaskTable"></tbody>
+</table>
+
+<script>
+    document.getElementById('assignDailyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const value = document.getElementById('assignDailyInput').value.trim();
+        if (!value) return;
+
+        
+        document.getElementById('DailyTaskTable').innerHTML = `
+            <tr>
+                <td>${value}</td>
+            </tr>
+        `;
+    });
+</script>
