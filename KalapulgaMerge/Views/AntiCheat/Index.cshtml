@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Mängu mängmine";
+}
+<h2>Mängi Mängu</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="PlayMe" method="post" action="/YourTargetAction">
+
+        
+ 
+
+            <button type="submit" class="btn btn-primary">
+                Mängi minuga
+            </button>
+         
+
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="Cheat" method="post" action="/YourTargetAction">
+
+       
+            <button type="submit" class="btn btn-primary">
+                Tee sohki
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+    document.getElementById('PlayMe').onsubmit = function(e) {
+        const userConfirmed = confirm("Mängi veel minuga");
+
+        if (!userConfirmed) {
+            e.preventDefault();
+        }
+    };
+</script>
+
+<script>
+
+    document.getElementById('Cheat').onsubmit = function(e) {
+        const userConfirmed = confirm("HOIATUS, EBAÕIGLANE MÄNGIMINE TUVASTATUD, ADMINSTRATOOR VAATAB KONTO ÜLE JA OTSUSTAB KAS SIND IGAVESTI EEMALDATA VÕI ANDA KARISTUST");
+
+        if (!userConfirmed) {
+            e.preventDefault();
+        }
+    };
+</script>
+
