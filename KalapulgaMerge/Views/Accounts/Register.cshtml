@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Kasutaja Registeerimine";
+}
+<h2>Registeeri ennast</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="registrationForm" method="post" action="/YourTargetAction">
+
+            <h1>Sisesta oma email</h1>
+            <input type="email" name="userEmail" value="" class="form-control" />
+
+            <br />
+
+            <button type="submit" class="btn btn-primary">
+                Registeeru
+            </button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+   
+    document.getElementById('registrationForm').onsubmit = function(e) {
+        const userConfirmed = confirm("KALAPULK ON PARIM KALAPULK ON PARIM KALAPULK ON PARIM");
+
+        if (!userConfirmed) {
+            e.preventDefault(); 
+        }
+    };
+</script>
