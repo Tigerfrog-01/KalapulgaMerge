@@ -1,0 +1,49 @@
+﻿<h3>Sisesta oma nimi</h3>
+
+<form id="Nimi">
+	<input id="Nimi" type="text" class="form-control" placeholder="Kes sa oled???" />
+    <br />
+    <button type="submit" class="btn btn-primary">Klikki mind</button>
+</form>
+
+<hr />
+
+<br />
+<h3>Sisesta oma telefoninumber</h3>
+<form id="Number">
+	<input id="Number1" type="text" class="form-control" placeholder="Jaga mulle su enda telefoninumbrit(luban , et ei helista kell kolm öösel)" />
+    <br />
+	<button type="submit" class="btn btn-primary">Klikki mind</button>
+</form>
+<hr />
+<br />
+<h3></h3>
+
+	<h3>Klikki mind, et saada tasuta skoori(legit)</h3>
+    <br />
+	<button  onclick="addScore()" class="btn btn-primary">Klikki mind</button>
+	<h2>Skoor: <span id="score">0</span></h2>
+
+<hr />
+<br />
+
+<h3>Osta kalapulgale uus müts nüüd või muidu..</h3>
+<form id="Osta">
+    <br />
+	<button type="submit" class="btn btn-primary">OSTA NÜÜD</button>
+	<hr />
+    
+    </form>
+
+	<script>
+		let currentscore = 0;
+		function addScore()
+		{
+			currentscore++;
+			document.getElementById("score").innerText = currentscore
+		}
+	</script>
+
+
+
+
