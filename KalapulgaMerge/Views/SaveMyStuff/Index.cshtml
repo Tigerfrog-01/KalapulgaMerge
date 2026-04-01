@@ -1,0 +1,75 @@
+﻿<h3>Sisesta oma nimi</h3>
+<form id="nameForm">
+    <input id="userInput" type="text" class="form-control" placeholder="Kes sa oled???" />
+    <br />
+    <button type="submit" class="btn btn-primary">Klikki mind</button>
+    <h2>Nimi: <span id="displayName">Tundmatu</span></h2>
+</form>
+
+<hr />
+<br />
+
+<h3>Sisesta oma telefoninumber</h3>
+<form id="numberForm">
+    <input id="userNumber" type="text" class="form-control" placeholder="Jaga mulle su enda telefoninumbrit(luban , et ei helista kell kolm öösel)" />
+    <br />
+    <button type="submit" class="btn btn-primary">Salvesta number</button>
+    <p id="numberDisplay"></p>
+</form>
+
+<hr />
+<br />
+
+<h3>Klikki mind, et saada tasuta skoori(legit)</h3>
+<br />
+<button onclick="addScore()" class="btn btn-primary">Klikki mind</button>
+<h2>Skoor: <span id="score">0</span></h2>
+
+<hr />
+<br />
+
+<h3>Osta kalapulgale uus müts nüüd või muidu..</h3>
+<form id="ostaForm">
+    <br />
+    <button type="submit" class="btn btn-danger">OSTA NÜÜD</button>
+    <h3 id="ostuTeade"></h3>
+</form>
+
+<script>
+    
+    let currentscore = 0;
+
+    function addScore() {
+        currentscore++;
+        document.getElementById("score").innerText = currentscore;  
+        if (currentscore > 15) {
+            document.getElementById("score").innerText = "ANTICHEAT ACTIVATED YOU USED HACKS FROM NOT LEGIT SITE, YOU WILL BE TERMINATED NOW!";   
+             currentscore = 0;
+        }
+    }
+
+    const nameForm = document.getElementById("nameForm");
+    nameForm.addEventListener("submit", function(event) {
+        event.preventDefault(); 
+        let nimi = document.getElementById("userInput").value;
+        if (nimi !== "") {
+            document.getElementById("displayName").innerText = nimi;
+        }
+    });
+
+   
+    const numberForm = document.getElementById("numberForm");
+    numberForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        let tel = document.getElementById("userNumber").value;
+        document.getElementById("numberDisplay").innerText = "Salvestatud: " + tel + " (Luban ,et ei helista sulle kell kolm öösel (pinky promise))";
+    });
+
+   
+    const ostaForm = document.getElementById("ostaForm");
+    ostaForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        document.getElementById("ostuTeade").innerText = "Kalapulk on maitsev....!";
+    });
+</script>
+
