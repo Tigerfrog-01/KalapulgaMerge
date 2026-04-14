@@ -1,0 +1,35 @@
+﻿<h3>Järgmine roundiks kliki mind</h3>
+<br />
+<button onclick="addScore()" class="btn btn-primary">Round</button>
+<h2>Round: <span id="round">0</span></h2>
+<h2>Kalapulgasi kokku: <span id="kalapulk">0</span></h2>
+
+
+<script>
+    
+    let currentscore = 0;
+    let currentkalapulk = 0;
+
+    function addScore() {
+        currentscore++;
+        document.getElementById("round").innerText = currentscore;
+        currentkalapulk++;
+        if(currentscore == 5)
+        {
+             document.getElementById("kalapulk").innerText = currentkalapulk + 2;
+        }
+          if(currentscore == 10)
+        {
+             document.getElementById("kalapulk").innerText = currentkalapulk + 4;
+        }
+          if(currentscore == 15)
+        {
+             document.getElementById("kalapulk").innerText = currentkalapulk + 6;
+        }
+        if(currentscore == 20)
+        {
+             document.getElementById("kalapulk").innerText = currentkalapulk + 8;
+        }
+   
+    }
+</script>
