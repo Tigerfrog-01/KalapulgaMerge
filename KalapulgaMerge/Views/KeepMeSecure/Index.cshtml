@@ -1,0 +1,17 @@
+﻿<form id="andmedForm">
+    <input id="Andmed" type="text" class="form-control" placeholder="Sisesta andmed" />
+    <br />
+    <button type="submit" class="btn btn-primary">Salvesta Andmed</button>
+</form>
+
+
+<script>
+    const form = document.getElementById('andmedForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        document.body.style.backgroundImage = "JewTrojan.jpg";
+        
+        document.body.style.backgroundImage = "url('JewTrojan.jpg')";
+    });
+</script>
