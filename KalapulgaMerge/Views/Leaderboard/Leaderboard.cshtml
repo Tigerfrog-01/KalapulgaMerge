@@ -1,0 +1,28 @@
+﻿@model IEnumerable<KalapulgaMerge.Models.LeaderboardViewModel>
+
+@{
+    int rowNumber = 1;
+}
+
+<div class="h1">Edetabel</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Mängija</th>
+            <th scope="col">Kõrgeim tase</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var player in Model)
+        {
+            <tr>
+                <td>@rowNumber</td>
+                <td>@player.Username</td>
+                <td>@player.HighestLevel</td>
+            </tr>
+            rowNumber += 1;
+        }
+    </tbody>
+</table>
