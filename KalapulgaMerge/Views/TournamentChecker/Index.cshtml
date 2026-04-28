@@ -1,0 +1,41 @@
+﻿@using System
+
+@{
+    var tournaments = new[] {
+        new { Name = "Kalapulga narko pidu", EndTime = DateTime.Now.AddMinutes(-10), Prize = "Unlimited white powder" },
+        new { Name = "Kalapulga KKK üritus", EndTime = DateTime.Now.AddMinutes(30), Prize = "Free candies" },
+        new { Name = "Kalapulga speedrun", EndTime = DateTime.Now.AddDays(1), Prize = "5000 coins" }
+    };
+
+    
+    DateTime globalClock = DateTime.Now;
+}
+
+<h2>Tournament Status Center</h2>
+<p>Current Time: <strong>@globalClock.ToString("HH:mm:ss")</strong></p>
+
+<hr />
+
+@foreach (var t in tournaments)
+{
+    bool isFinished = globalClock > t.EndTime;
+
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+        <h3>@t.Name</h3>
+        
+        @if (isFinished)
+        {
+            <p style="color: green;">
+                <strong>Status:</strong> Finished! <br />
+                <strong>Prize Awarded:</strong> @t.Prize 🎉
+            </p>
+        }
+        else
+        {
+            <p style="color: blue;">
+                <strong>Status:</strong> In Progress... <br />
+                <strong>Ends at:</strong> @t.EndTime.ToString("HH:mm")
+            </p>
+        }
+    </div>
+}
