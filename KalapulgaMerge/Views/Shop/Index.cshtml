@@ -1,33 +1,38 @@
-﻿<h3>Pood</h3>
-</hr>
+﻿@model ShopViewModel
+
+<h3>Pood</h3>
+<hr />
+<p>Bilanss: @Model.UserBalance</p>
 
 <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    @foreach (var item in Model.Items)
+    {
+        bool owned = Model.OwnedItemIds.Contains(item.Id);
+        bool canAfford = Model.UserBalance >= item.Price;
 
-    <div style="border: 2px solid black; border-radius: 5px; width: 250px; padding: 10px;">
-        <label><strong>Kõrvad</strong></label>
-        <br><br>
-        <img src="~/lib/defaultassets/image/shop1.png" style="width:100%;" />
-        <h3>Hind : 670</h3>
-        <button onclick="alert('Proovisid selga!')">Proovi</button>
-    </div>
+        <div style="border: 2px solid black; border-radius: 5px; width: 250px; padding: 10px;">
+            <label><strong>@item.Name</strong></label>
+            <br /><br />
+            <img src="@item.ImagePath" style="width:100%;" />
+            <h3>Hind: @item.Price</h3>
 
-    <div style="border: 2px solid black; border-radius: 5px; width: 250px; padding: 10px;">
-        <label><strong>Kõrvad</strong></label>
-        <br><br>
-        <img src="~/lib/defaultassets/image/shop1.png" style="width:100%;" />
-        <h3>Hind : 670</h3>
-        <button onclick="alert('Proovisid selga!')">Proovi</button>
-    </div>
+            <button onclick="alert('Proovisid selga!')">Proovi</button>
 
-    <div style="border: 2px solid black; border-radius: 5px; width: 250px; padding: 10px;">
-        <label><strong>Kõrvad</strong></label>
-        <br><br>
-        <img src="~/lib/defaultassets/image/shop1.png" style="width:100%;" />
-        <h3>Hind : 670</h3>
-        <button onclick="alert('Proovisid selga!')">Proovi</button>
+            @if (owned)
+            {
+                <span style="color: green;">✓ Ostetud</span>
+            }
+            else
+            {
+                <form method="post" asp-action="Buy" style="display:inline;">
 
-    </div>
+                    <input type="hidden" name="itemId" value="@item.Id" />
+                    <button type="submit" @(canAfford ? "" : "disabled")>
+                        @(canAfford ? "Osta" : "Pole piisavalt")
+                    </button>
 
+                </form>
+            }
+        </div>
+    }
 </div>
-
-
