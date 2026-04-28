@@ -1,0 +1,30 @@
+/* This targets ONLY the numbers inside your game tiles */
+.box p {
+    font-size: 1.5rem; /* Adjusted for better fit */
+    font-weight: bold;
+    margin: auto;
+    text-align: center;
+    line-height: 1; /* Prevents vertical displacement */
+    color: #776e65; /* Standard 2048 text color */
+}
+
+/* Base style for the game container */
+#game {
+    position: relative;
+    margin: 20px auto;
+}
+
+.nav-title {
+    font-size: 2.25em;
+    color: white;
+}
+
+.font-1 {
+    font-size: 1em;
+}
+#gameWrapper {
+    display: block !important;
+    visibility: visible !important;
+    min-height: 520px; /* Matches your 500px game + padding */
+    margin-bottom: 20px;
+}

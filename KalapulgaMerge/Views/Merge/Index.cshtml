@@ -1,0 +1,545 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        :root {
+            --bg: #fff5e6;
+            --board: #ed9121;
+            --board-border: #c06c00;
+            --tile-text: red;
+            --btn-main: #ffaa33;
+            --btn-shadow: #cc7a00;
+            --lb-bg: white;
+            --lb-text: #c06c00;
+            --accent: #ffffff;
+        }
+
+        body.theme-ocean {
+            --bg: #e0f7fa;
+            --board: #00838f;
+            --board-border: #006064;
+            --tile-text: #fff;
+            --btn-main: #26c6da;
+            --btn-shadow: #0097a7;
+            --lb-bg: #e0f2f1;
+            --lb-text: #006064;
+            --accent: #4dd0e1;
+        }
+
+        body.theme-neon {
+            --bg: #0a0a0a;
+            --board: #1a1a1a;
+            --board-border: #000;
+            --tile-text: #0f0;
+            --btn-main: #333;
+            --btn-shadow: #000;
+            --lb-bg: #111;
+            --lb-text: #0f0;
+            --accent: #0f0;
+        }
+
+        body { 
+            background-color: var(--bg); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            transition: all 0.3s ease;
+        }
+
+        .top-nav { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 500; }
+        
+        .currency-bar {
+            background: rgba(0,0,0,0.8); color: gold; padding: 10px 20px; border-radius: 30px;
+            font-weight: bold; font-size: 20px; border: 2px solid gold; display: flex; align-items: center; gap: 8px;
+        }
+
+        .icon-btn {
+            font-size: 28px; cursor: pointer; background: linear-gradient(180deg, var(--btn-main) 0%, var(--btn-shadow) 100%);
+            border: none; border-bottom: 4px solid var(--btn-shadow);
+            border-radius: 50%; width: 55px; height: 55px; display: flex;
+            align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .icon-btn:active { transform: translateY(3px); border-bottom-width: 1px; }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none; z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+
+        .modal-box { 
+            background: var(--bg); padding: 30px; border-radius: 25px; 
+            text-align: center; width: 400px; border: 5px solid var(--board-border);
+            max-height: 85vh; overflow-y: auto;
+        }
+
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        
+        .shop-category-title {
+            grid-column: 1 / -1;
+            color: var(--lb-text);
+            font-weight: 900;
+            text-align: left;
+            border-bottom: 3px solid var(--board-border);
+            margin-top: 15px;
+            padding-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .shop-item {
+            background: white; border: 3px solid var(--board-border); border-radius: 15px; padding: 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .skin-preview { width: 70px; height: 70px; border-radius: 10px; background-size: contain; background-repeat: no-repeat; background-position: center; border: 2px solid #ccc; position: relative; }
+
+        .main-layout { display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; }
+
+        #game-board {
+            width: 400px; height: 400px; background: var(--board); position: relative; border-radius: 15px; padding: 10px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); border: 6px solid var(--board-border);
+        }
+
+        .leaderboard {
+            width: 260px; background: var(--lb-bg); border-radius: 15px; padding: 20px;
+            border: 5px solid var(--board-border); color: var(--lb-text);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .tile {
+            width: 90px; height: 90px; color: var(--tile-text); position: absolute; display: flex; align-items: center;
+            justify-content: center; font-size: 38px; font-weight: 900; border-radius: 10px; transition: transform 0.15s;
+            z-index: 10; text-shadow: 2px 2px 0px white; background-size: contain; background-repeat: no-repeat; background-position: center;
+        }
+
+        .tile-accessory, .tile-body {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            pointer-events: none;
+            z-index: 12;
+        }
+        
+        .tile-body { z-index: 11; }
+
+        .controls { display: grid; grid-template-areas: ". up ." "left down right"; gap: 15px; justify-content: center; margin-top: 30px; }
+        .btn { 
+            width: 75px; height: 75px; background: linear-gradient(180deg, var(--btn-main) 0%, var(--btn-shadow) 100%); 
+            border: none; border-bottom: 6px solid var(--btn-shadow); border-radius: 18px; 
+            color: white; font-size: 32px; cursor: pointer; display: flex; 
+            align-items: center; justify-content: center; text-shadow: 0 2px 2px rgba(0,0,0,0.3);
+        }
+        #up { grid-area: up; } #left { grid-area: left; } #down { grid-area: down; } #right { grid-area: right; }
+
+        .login-btn { 
+            width: 180px; height: 60px; font-size: 22px; font-weight: bold; margin: 10px auto;
+            background: linear-gradient(180deg, var(--btn-main) 0%, var(--btn-shadow) 100%);
+            border: none; border-bottom: 6px solid var(--btn-shadow); border-radius: 15px; color: white; cursor: pointer;
+            display: block; transition: all 0.1s;
+        }
+        .login-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+        .login-btn:disabled { opacity: 0.7; cursor: default; transform: none; border-bottom-width: 6px; }
+
+        .mode-btn {
+            width: 130px; height: 50px; font-size: 18px; font-weight: bold; border-radius: 12px;
+            cursor: pointer; border: none; transition: 0.2s; color: white;
+            background: #888; border-bottom: 4px solid #555;
+        }
+        .mode-btn.active {
+            background: linear-gradient(180deg, #ff4444 0%, #aa0000 100%);
+            border-bottom: 4px solid #660000;
+            transform: scale(1.05);
+        }
+
+        #login-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--board); display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; z-index: 2000; color: white;
+        }
+
+        .lock-overlay { 
+            width: 90px; height: 90px; background: radial-gradient(circle, #4a0000 0%, #1a0000 100%); 
+            border: 4px solid #000; position: absolute; border-radius: 12px; display: flex; 
+            align-items: center; justify-content: center; font-size: 45px; z-index: 50; 
+        }
+
+        #game-over { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; color: white; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <div class="currency-bar">🪙 <span id="coin-count">0</span></div>
+        <button class="icon-btn" onclick="toggleModal('shop-overlay')">🛒</button>
+        <button class="icon-btn" onclick="toggleModal('settings-overlay')">⚙️</button>
+    </div>
+
+    <div id="shop-overlay" class="overlay">
+        <div class="modal-box">
+            <h2 style="color: var(--lb-text);">CUSTOMIZATION SHOP</h2>
+            <div id="shop-items-container"></div>
+            <button class="login-btn" style="height: 45px; font-size: 16px; margin-top: 20px;" onclick="toggleModal('shop-overlay')">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="settings-overlay" class="overlay">
+        <div class="modal-box">
+            <h2 style="color: var(--lb-text); margin-bottom: 20px;">THEMES</h2>
+            <button class="login-btn" style="width: 100%;" onclick="changeTheme('original')">BREADED STICKS</button>
+            <button class="login-btn" style="width: 100%;" onclick="changeTheme('ocean')">DEEP OCEAN</button>
+            <button class="login-btn" style="width: 100%;" onclick="changeTheme('neon')">NEON MATRIX</button>
+            <hr style="border: 1px solid var(--board-border); opacity: 0.3; margin: 20px 0;">
+            <button class="login-btn" style="width: 150px; height: 45px; font-size: 16px;" onclick="toggleModal('settings-overlay')">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="login-screen">
+        <h1 style="font-size: 55px; margin-bottom: 10px;">KALAPULK 2048</h1>
+        <input type="text" id="username" placeholder="Enter Name..." style="padding:15px; border-radius:12px; border:none; width:280px; font-size: 18px; text-align: center; margin-bottom: 15px;">
+        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <button id="norm-btn" class="mode-btn active" onclick="setMode('normal')">NORMAL</button>
+            <button id="hard-btn" class="mode-btn" onclick="setMode('hard')">HARD</button>
+        </div>
+        <button class="login-btn" onclick="startGame()">START</button>
+    </div>
+
+    <div style="text-align:center; color: var(--board-border);">
+        <h2 style="text-transform: uppercase; letter-spacing: 2px; margin: 0;">
+            PLAYER: <span id="display-name">---</span> (<span id="display-mode">NORMAL</span>)
+        </h2>
+        <h1 style="font-size: 48px; margin: 5px 0;">SCORE: <span id="current-score">0</span></h1>
+    </div>
+
+    <div class="main-layout">
+        <div>
+            <div id="game-board">
+                <div id="game-over">
+                    <h1 style="font-size: 40px;">GAME OVER</h1>
+                    <button class="login-btn" style="width:140px;" onclick="restartGame()">RETRY</button>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn" id="up" onclick="handleMove('up')">▲</button>
+                <button class="btn" id="left" onclick="handleMove('left')">◀</button>
+                <button class="btn" id="down" onclick="handleMove('down')">▼</button>
+                <button class="btn" id="right" onclick="handleMove('right')">▶</button>
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <h3 style="text-align:center; margin-top:0; border-bottom: 2px solid var(--board-border); padding-bottom: 10px;">HIGH SCORES</h3>
+            <div id="leaderboard-list"></div>
+        </div>
+    </div>
+
+<script>
+    let grid = Array(16).fill(null), score = 0, currentUser = "", gameMode = "normal", lockedIndex = -1, lockElement = null;
+    let coins = parseInt(localStorage.getItem('kalapulkCoins')) || 0;
+    
+    const shopItems = {
+        colour: [
+            { id: 'stick', name: 'Fish Stick', price: 0, img: 'https://png.pngtree.com/png-vector/20240103/ourmid/pngtree-fish-stick-on-a-white-background-breaded-png-image_10938833.png' },
+            { id: 'ice', name: 'Ice Stick', price: 25, img: 'ice-stick.png' },
+            { id: 'spicy', name: 'Spicy Stick', price: 50, img: 'hot-stick.png' },
+            { id: 'gold', name: 'Golden Stick', price: 1000, img: 'gold-stick.png' }
+        ],
+        head: [
+            { id: 'head-none', name: 'None', price: 0, img: '' },
+            { id: 'cat', name: 'Cat-Ears', price: 25, img: 'cat-pulk.png' },
+            { id: 'tophat', name: 'tophat', price: 50, img: 'top-pulk.png' }
+        ],
+        body: [
+            { id: 'body-none', name: 'None', price: 0, img: '' },
+            { id: 'bow', name: 'bowtie', price: 10, img: 'bow-stick.png' },
+             { id: 'donut', name: 'donut', price: 10, img: 'donut-pulk.png' }
+           
+        ]
+    };
+
+    let unlockedItems = JSON.parse(localStorage.getItem('kalapulkUnlockedItems')) || ['stick', 'head-none', 'body-none'];
+    let activeEquipment = JSON.parse(localStorage.getItem('kalapulkEquipped')) || { colour: 'stick', head: 'head-none', body: 'body-none' };
+
+    const board = document.getElementById('game-board'), scoreText = document.getElementById('current-score'), coinText = document.getElementById('coin-count');
+
+    function toggleModal(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+        if (id === 'shop-overlay') updateShopUI();
+    }
+
+    function updateCurrency(amount) {
+        coins += amount;
+        coinText.innerText = coins;
+        localStorage.setItem('kalapulkCoins', coins);
+    }
+    updateCurrency(0);
+
+    function updateShopUI() {
+        const container = document.getElementById('shop-items-container');
+        container.innerHTML = '';
+        
+        for(let category in shopItems) {
+            const catTitle = document.createElement('div');
+            catTitle.className = 'shop-category-title';
+            catTitle.innerText = category.toUpperCase();
+            container.appendChild(catTitle);
+            
+            const gridDiv = document.createElement('div');
+            gridDiv.className = 'shop-grid';
+            
+            shopItems[category].forEach(item => {
+                const isUnlocked = unlockedItems.includes(item.id);
+                const isEquipped = activeEquipment[category] === item.id;
+                
+                gridDiv.innerHTML += `
+                    <div class="shop-item">
+                        <div class="skin-preview" style="background-image: url('${item.img}')">${item.id.includes('none') ? '❌' : ''}</div>
+                        <div style="font-weight: bold; font-size: 14px;">${item.name}</div>
+                        <button class="login-btn" style="width:100%; height:35px; font-size:14px; margin:0;" 
+                            onclick="${isUnlocked ? `equipItem('${category}', '${item.id}')` : `buyItem('${category}', '${item.id}', ${item.price})`}"
+                            ${isEquipped ? 'disabled' : ''}>
+                            ${isEquipped ? 'EQUIPPED' : (isUnlocked ? 'SELECT' : '🪙 ' + item.price)}
+                        </button>
+                    </div>
+                `;
+            });
+            container.appendChild(gridDiv);
+        }
+    }
+
+    function buyItem(category, id, price) {
+        if (coins >= price) {
+            updateCurrency(-price);
+            unlockedItems.push(id);
+            localStorage.setItem('kalapulkUnlockedItems', JSON.stringify(unlockedItems));
+            updateShopUI();
+        } else { alert("Not enough coins!"); }
+    }
+
+    function equipItem(category, id) {
+        activeEquipment[category] = id;
+        localStorage.setItem('kalapulkEquipped', JSON.stringify(activeEquipment));
+        updateShopUI();
+        refreshAllTiles();
+    }
+
+    function refreshAllTiles() {
+        document.querySelectorAll('.tile').forEach(tile => {
+            const colourItem = shopItems.colour.find(s => s.id === activeEquipment.colour);
+            const headItem = shopItems.head.find(s => s.id === activeEquipment.head);
+            const bodyItem = shopItems.body.find(s => s.id === activeEquipment.body);
+            
+            tile.style.backgroundImage = `url('${colourItem.img}')`;
+            
+            let headAcc = tile.querySelector('.tile-accessory');
+            if(headAcc) headAcc.style.backgroundImage = (headItem && headItem.img) ? `url('${headItem.img}')` : 'none';
+
+            let bodyAcc = tile.querySelector('.tile-body');
+            if(bodyAcc) bodyAcc.style.backgroundImage = (bodyItem && bodyItem.img) ? `url('${bodyItem.img}')` : 'none';
+        });
+    }
+
+    function changeTheme(theme) {
+        document.body.className = ''; 
+        if (theme !== 'original') document.body.classList.add('theme-' + theme);
+        localStorage.setItem('kalapulkTheme', theme);
+    }
+
+    if (localStorage.getItem('kalapulkTheme')) changeTheme(localStorage.getItem('kalapulkTheme'));
+
+    function setMode(m) { 
+        gameMode = m; 
+        document.getElementById('norm-btn').classList.toggle('active', m === 'normal');
+        document.getElementById('hard-btn').classList.toggle('active', m === 'hard');
+        document.getElementById('display-mode').innerText = m.toUpperCase();
+    }
+
+    function startGame() {
+        currentUser = document.getElementById('username').value.trim() || "Guest";
+        document.getElementById('display-name').innerText = currentUser;
+        document.getElementById('login-screen').style.display = 'none';
+        updateLeaderboard();
+        addRandomTile(); addRandomTile();
+        if (gameMode === 'hard') updateLock();
+    }
+
+    
+    function createTile(v, i) {
+        const t = { value: v, element: document.createElement('div') };
+        t.element.className = 'tile';
+        
+        const valSpan = document.createElement('span');
+        valSpan.innerText = v;
+        t.element.appendChild(valSpan);
+
+        const bdy = document.createElement('div');
+        bdy.className = 'tile-body';
+        t.element.appendChild(bdy);
+        
+        const acc = document.createElement('div');
+        acc.className = 'tile-accessory';
+        t.element.appendChild(acc);
+
+        board.appendChild(t.element);
+        updatePosition(t, i);
+        
+        const colourItem = shopItems.colour.find(s => s.id === activeEquipment.colour);
+        const headItem = shopItems.head.find(s => s.id === activeEquipment.head);
+        const bodyItem = shopItems.body.find(s => s.id === activeEquipment.body);
+
+        t.element.style.backgroundImage = `url('${colourItem.img}')`;
+        acc.style.backgroundImage = (headItem && headItem.img) ? `url('${headItem.img}')` : 'none';
+        bdy.style.backgroundImage = (bodyItem && bodyItem.img) ? `url('${bodyItem.img}')` : 'none';
+
+        return t;
+    }
+
+    function slideAndMerge(rowIndices) {
+        let changed = false, newRow = Array(4).fill(null);
+        for (let i = 0; i < 4; i++) {
+            let tile = grid[rowIndices[i]];
+            if (!tile) continue;
+            let targetIdx = i;
+            for (let j = i - 1; j >= 0; j--) {
+                if ((gameMode === 'hard' && rowIndices[j] === lockedIndex) || newRow[j] !== null) {
+                    targetIdx = j + 1; break;
+                }
+                targetIdx = j;
+            }
+            if (targetIdx > 0 && newRow[targetIdx-1] && newRow[targetIdx-1].value === tile.value) {
+                newRow[targetIdx-1].value *= 2;
+                score += newRow[targetIdx-1].value;
+                updateCurrency(Math.floor(newRow[targetIdx-1].value / 10)); 
+                scoreText.innerText = score;
+                tile.element.remove();
+                
+                newRow[targetIdx-1].element.querySelector('span').innerText = newRow[targetIdx-1].value;
+                
+                changed = true;
+            } else {
+                newRow[targetIdx] = tile;
+                if (targetIdx !== i) changed = true;
+            }
+        }
+        return { newRow, changed };
+    }
+    
+
+    function updatePosition(t, i) {
+        let r = Math.floor(i / 4), c = i % 4;
+        t.element.style.transform = `translate(${c * 100 + 10}px, ${r * 100 + 10}px)`;
+    }
+
+    function updateLock() {
+        if (lockElement) lockElement.remove();
+        let slots = grid.map((v, i) => v === null ? i : null).filter(v => v !== null);
+        if (slots.length > 0) {
+            lockedIndex = slots[Math.floor(Math.random() * slots.length)];
+            lockElement = document.createElement('div');
+            lockElement.className = 'lock-overlay'; lockElement.innerHTML = '🚫';
+            let r = Math.floor(lockedIndex/4), c = lockedIndex%4;
+            lockElement.style.transform = `translate(${c * 100 + 10}px, ${r * 100 + 10}px)`;
+            board.appendChild(lockElement);
+        }
+    }
+
+    function handleMove(dir) {
+        let anyChanged = false;
+        for (let i = 0; i < 4; i++) {
+            let indices = [];
+            for (let j = 0; j < 4; j++) {
+                if (dir === 'left' || dir === 'right') indices.push(i * 4 + j);
+                else indices.push(j * 4 + i);
+            }
+            if (dir === 'right' || dir === 'down') indices.reverse();
+            let res = slideAndMerge(indices);
+            indices.forEach((idx, k) => {
+                grid[idx] = res.newRow[k];
+                if (grid[idx]) updatePosition(grid[idx], idx);
+            });
+            if (res.changed) anyChanged = true;
+        }
+        if (anyChanged) {
+            setTimeout(() => { 
+                addRandomTile(); 
+                if (gameMode === 'hard') updateLock();
+                if (checkGameOver()) endGame();
+            }, 100);
+        }
+    }
+
+    function checkGameOver() {
+        if (grid.filter((t, i) => t === null && i !== lockedIndex).length > 0) return false;
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                let idx = i * 4 + j; if (!grid[idx]) continue;
+                if (j < 3 && grid[idx + 1] && grid[idx + 1].value === grid[idx].value) return false;
+                if (i < 3 && grid[idx + 4] && grid[idx + 4].value === grid[idx].value) return false;
+            }
+        }
+        return true;
+    }
+
+    function endGame() {
+        saveScore(currentUser, score);
+        document.getElementById('game-over').style.display = 'flex';
+        updateLeaderboard();
+    }
+
+ 
+    function saveScore(n, s) {
+        let h = JSON.parse(localStorage.getItem('kalapulkScores') || '[]');
+        
+       
+        let existingUserIdx = h.findIndex(entry => entry.name.toLowerCase() === n.toLowerCase());
+
+        if (existingUserIdx !== -1) {
+          
+            if (s > h[existingUserIdx].score) {
+                h[existingUserIdx].score = s;
+                h[existingUserIdx].name = n; 
+            }
+        } else {
+       
+            h.push({ name: n, score: s });
+        }
+
+      
+        h.sort((a, b) => b.score - a.score);
+        localStorage.setItem('kalapulkScores', JSON.stringify(h.slice(0, 10)));
+    }
+
+    function updateLeaderboard() {
+        let h = JSON.parse(localStorage.getItem('kalapulkScores') || '[]');
+        document.getElementById('leaderboard-list').innerHTML = h.map(s => `
+            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.1);">
+                <span>${s.name}</span>
+                <b>${s.score}</b>
+            </div>`).join('');
+    }
+
+    function addRandomTile() {
+        let slots = grid.map((v, i) => (v === null && i !== lockedIndex) ? i : null).filter(v => v !== null);
+        if (slots.length > 0) {
+            let spot = slots[Math.floor(Math.random() * slots.length)];
+            grid[spot] = createTile(2, spot);
+        }
+    }
+
+    function restartGame() {
+        grid.forEach(t => t && t.element.remove());
+        grid = Array(16).fill(null); if (lockElement) lockElement.remove();
+        score = 0; scoreText.innerText = "0";
+        document.getElementById('game-over').style.display = 'none';
+        addRandomTile(); addRandomTile(); if (gameMode === 'hard') updateLock();
+    }
+
+    window.addEventListener('keydown', (e) => {
+        const keys = { "ArrowLeft": "left", "ArrowRight": "right", "ArrowUp": "up", "ArrowDown": "down" };
+        if (keys[e.key]) { e.preventDefault(); handleMove(keys[e.key]); }
+    });
+</script>
+</body>
+</html>

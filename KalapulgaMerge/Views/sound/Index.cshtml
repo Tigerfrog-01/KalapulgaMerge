@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Heli Süsteem";
+}
+
+<div class="text-center">
+    <h1 class="d">Heli Süsteem</h1>
+    <p>Klikka, et kuulda heli</p>
+
+    <hr />
+
+    <div class="mt-4">
+
+        <button type="button" class="btn btn-primary btn-lg sound-trigger"
+                data-sound="\lib\defaultassets\sounds\bubble.mp3">
+            Just Play Sound
+        </button>
+
+        <a href="@Url.Action("Privacy", "Home")"
+               class="btn btn-info btn-lg sound-link"
+               data-sound="\lib\defaultassets\sounds\perc.mp3">
+            Go to Privacy Page
+        </a>
+    </div>
+
+    @section Scripts {
+        <script>
+                // buttin
+                document.querySelectorAll('.sound-trigger').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const audio = new Audio(this.getAttribute('data-sound'));
+                        audio.play();
+                    });
+                });
+
+                // link
+                document.querySelectorAll('.sound-link').forEach(link => {
+                    link.addEventListener('click', function (e) {  
+                        e.preventDefault();
+                
+                        const destination = this.href;
+                        const audio = new Audio(this.getAttribute('data-sound'));
+
+                        audio.play();
+
+                        // delay 
+                        // then redirect 
+                        setTimeout(() => {
+                            window.location.href = destination;
+                        }, 400);
+                    });
+                });
+        </script>
+    }
