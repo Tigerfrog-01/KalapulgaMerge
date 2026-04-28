@@ -1,0 +1,7 @@
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\bow-stick.png
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\cat-pulk.png
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\donut-pulk.png
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\gold-stick.png
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\hot-stick.png
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\ice-stick.png
+C:\Users\opilane\source\repos\KalapulgaMerge\KalapulgaMerge\wwwroot\top-pulk.png
