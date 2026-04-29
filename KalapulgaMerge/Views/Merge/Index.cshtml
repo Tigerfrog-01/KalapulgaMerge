@@ -438,7 +438,7 @@
         if (slots.length > 0) {
             lockedIndex = slots[Math.floor(Math.random() * slots.length)];
             lockElement = document.createElement('div');
-            lockElement.className = 'lock-overlay'; lockElement.innerHTML = '🚫';
+            lockElement.className = 'lock-overlay'; lockElement.innerHTML = '🔒';
             let r = Math.floor(lockedIndex/4), c = lockedIndex%4;
             lockElement.style.transform = `translate(${c * 100 + 10}px, ${r * 100 + 10}px)`;
             board.appendChild(lockElement);
