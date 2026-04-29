@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.37027.9 d17.14
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11612.150 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KalapulgaMerge", "..\KalapulgaMerge\KalapulgaMerge.csproj", "{BC619F30-2C6E-4281-8C1F-E2091E02EC06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KalapulgaMerge.Data", "KalapulgaMerge.Data\KalapulgaMerge.Data.csproj", "{3F0A31D7-DEC6-4E67-8E0C-D1FB0F73732D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KalapulgaMerge.Core", "KalapulgaMerge.Core\KalapulgaMerge.Core.csproj", "{62B68245-A4DA-4303-AFC8-4536ED762884}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KalapulgaMerge.ApplicationServices", "KalapulgaMerge.ApplicationServices\KalapulgaMerge.ApplicationServices.csproj", "{B06EF4D3-6FFB-4C44-968F-5AA8CC240916}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{BC619F30-2C6E-4281-8C1F-E2091E02EC06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC619F30-2C6E-4281-8C1F-E2091E02EC06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC619F30-2C6E-4281-8C1F-E2091E02EC06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F0A31D7-DEC6-4E67-8E0C-D1FB0F73732D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F0A31D7-DEC6-4E67-8E0C-D1FB0F73732D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F0A31D7-DEC6-4E67-8E0C-D1FB0F73732D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F0A31D7-DEC6-4E67-8E0C-D1FB0F73732D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62B68245-A4DA-4303-AFC8-4536ED762884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62B68245-A4DA-4303-AFC8-4536ED762884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62B68245-A4DA-4303-AFC8-4536ED762884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62B68245-A4DA-4303-AFC8-4536ED762884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B06EF4D3-6FFB-4C44-968F-5AA8CC240916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B06EF4D3-6FFB-4C44-968F-5AA8CC240916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B06EF4D3-6FFB-4C44-968F-5AA8CC240916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B06EF4D3-6FFB-4C44-968F-5AA8CC240916}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
