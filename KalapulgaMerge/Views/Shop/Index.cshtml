@@ -1,38 +1,125 @@
-﻿@model ShopViewModel
+﻿@model IEnumerable<KalapulgaMerge.Models.ShopItemViewModel>
+@{
+    ViewData["Title"] = "Pood";
 
-<h3>Pood</h3>
-<hr />
-<p>Bilanss: @Model.UserBalance</p>
-
-<div style="display: flex; flex-wrap: wrap; gap: 20px;">
-    @foreach (var item in Model.Items)
+    // Grupeeri tüübi järgi eesti keeles
+    string TypeLabel(string type) => type switch
     {
-        bool owned = Model.OwnedItemIds.Contains(item.Id);
-        bool canAfford = Model.UserBalance >= item.Price;
+        "Hat" => "Mütsid",
+        "Glasses" => "Prillid",
+        "Color" => "Värvid",
+        _ => type
+    };
 
-        <div style="border: 2px solid black; border-radius: 5px; width: 250px; padding: 10px;">
-            <label><strong>@item.Name</strong></label>
-            <br /><br />
-            <img src="@item.ImagePath" style="width:100%;" />
-            <h3>Hind: @item.Price</h3>
+    var groups = Model.GroupBy(x => x.Type).OrderBy(g => g.Key);
+}
 
-            <button onclick="alert('Proovisid selga!')">Proovi</button>
+<div class="shop-catalog">
+    <h1 class="shop-title">Pood</h1>
 
-            @if (owned)
-            {
-                <span style="color: green;">✓ Ostetud</span>
-            }
-            else
-            {
-                <form method="post" asp-action="Buy" style="display:inline;">
+    @foreach (var group in groups)
+    {
+        <section class="shop-section">
+            <h2 class="shop-section-title">@TypeLabel(group.Key)</h2>
 
-                    <input type="hidden" name="itemId" value="@item.Id" />
-                    <button type="submit" @(canAfford ? "" : "disabled")>
-                        @(canAfford ? "Osta" : "Pole piisavalt")
-                    </button>
+            <div class="shop-grid">
+                @foreach (var item in group)
+                {
+                    <div class="shop-card">
+                        <img src="@item.ImageUrl"
+                             alt="@item.Name"
+                             class="shop-card__img" />
 
-                </form>
-            }
-        </div>
+                        <div class="shop-card__body">
+                            <h3 class="shop-card__name">@item.Name</h3>
+
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <p class="shop-card__desc">@item.Description</p>
+                            }
+
+                            <span class="shop-card__price">@item.Price.ToString("N0") münti</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
     }
-</div> 
+</div>
+
+@section Styles {
+    <style>
+        .shop-catalog {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .shop-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .shop-section {
+            margin-bottom: 3rem;
+        }
+
+        .shop-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .shop-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+
+            .shop-card:hover {
+                box-shadow: 0 4px 16px rgba(0,0,0,.10);
+            }
+
+        .shop-card__img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: contain;
+            background: #f9fafb;
+            padding: 1rem;
+        }
+
+        .shop-card__body {
+            padding: 0.75rem 1rem 1rem;
+        }
+
+        .shop-card__name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem;
+        }
+
+        .shop-card__desc {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin: 0 0 0.5rem;
+        }
+
+        .shop-card__price {
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+    </style>
+}

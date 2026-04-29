@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using KalapulgaMerge.Core.Dto;
 
-namespace KalapulgaMerge.Core.ServiceInterface
+namespace KalapulgaMerge.Core.ServiceInterface;
+
+public interface IShopService
 {
-    public interface IShopServices
-    {
-    }
+
+    Task<IEnumerable<ShopItemDTO>> GetCatalogAsync();
 }
