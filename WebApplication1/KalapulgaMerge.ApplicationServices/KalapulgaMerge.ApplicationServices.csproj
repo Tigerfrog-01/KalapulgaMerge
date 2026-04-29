@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.26" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KalapulgaMerge.Data\KalapulgaMerge.Data.csproj" />
+  </ItemGroup>
+
 </Project>

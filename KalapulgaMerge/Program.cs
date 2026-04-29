@@ -1,3 +1,5 @@
+using KalapulgaMerge.ApplicationServices.Services;
+using KalapulgaMerge.Core.ServiceInterface;
 using KalapulgaMerge.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +13,13 @@ namespace KalapulgaMerge
             builder.Services.AddDbContext<KalapulkDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
-                    x => x.MigrationsAssembly("KalapulgaMerge") // This is the key line
+                    x => x.MigrationsAssembly("KalapulgaMerge.Data") // This is the key line
                 ));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IShopService, ShopServices>();
+
 
             var app = builder.Build();
 

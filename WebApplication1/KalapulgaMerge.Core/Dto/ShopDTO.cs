@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace KalapulgaMerge.Core.Dto;
 
-namespace KalapulgaMerge.Core.Dto
-{
-    internal class ShopDTO
-    {
-    }
-}
+public record ShopItemDTO(
+    int Id,
+    string Name,
+    string Description,
+    decimal Price,
+    string Type,        // "Hat"  "Glasses"  "Color"
+    string ImageUrl
+);

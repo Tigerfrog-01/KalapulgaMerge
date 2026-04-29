@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace KalapulgaMerge.Core.Domain;
 
-namespace KalapulgaMerge.Core.Domain
+public class ShopItem
 {
-    public class Shop
-    {
-    }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public ShopItemType Type { get; set; }
+    public string ImageUrl { get; set; } = string.Empty;
+    public bool IsAvailable { get; set; } = true;
+}
+
+public enum ShopItemType
+{
+    Hat = 0,
+    Glasses = 1,
+    Color = 2
 }
