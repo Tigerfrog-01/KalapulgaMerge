@@ -19,6 +19,7 @@ namespace KalapulgaMerge
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IShopService, ShopServices>();
+            builder.Services.AddScoped<IPreviewService, PreviewService>();
 
 
             var app = builder.Build();
