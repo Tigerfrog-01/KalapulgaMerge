@@ -1,3 +1,6 @@
+using KalapulgaMerge.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace KalapulgaMerge
 {
     public class Program
@@ -5,6 +8,11 @@ namespace KalapulgaMerge
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<KalapulkDbContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    x => x.MigrationsAssembly("KalapulgaMerge") // This is the key line
+                ));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

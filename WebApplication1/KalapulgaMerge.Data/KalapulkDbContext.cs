@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace KalapulgaMerge.Data
 {
-    public class KalapulkContext : DbContext
+    public class KalapulkDbContext : DbContext
     {
-        public KalapulkContext(DbContextOptions<KalapulkContext> options) : base(options) { }
+        public KalapulkDbContext(DbContextOptions<KalapulkDbContext> options) : base(options) { }
     }
 }
