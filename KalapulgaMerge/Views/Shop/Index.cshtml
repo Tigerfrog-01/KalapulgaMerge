@@ -1,184 +1,49 @@
 ﻿@model IEnumerable<KalapulgaMerge.Models.ShopItemViewModel>
 @{
     ViewData["Title"] = "Pood";
-
-    string TypeLabel(string type) => type switch
-    {
-        "Hat"     => "Mütsid",
-        "Glasses" => "Prillid",
-        "Color"   => "Värvid",
-        _         => type
-    };
-
-    var groups = Model.GroupBy(x => x.Type).OrderBy(g => g.Key);
+    var groups = Model.GroupBy(x => x.Type);
 }
 
-<div class="shop-catalog">
-    <h1 class="shop-title">Pood</h1>
-
+<div style="max-width: 900px; margin: auto; font-family: sans-serif;">
     @foreach (var group in groups)
     {
-        <section class="shop-section">
-            <h2 class="shop-section-title">@TypeLabel(group.Key)</h2>
-
-            <div class="shop-grid">
-                @foreach (var item in group)
-                {
-                    <div class="shop-card" data-item-id="@item.Id" title="Proovi selga">
-                        <img src="@item.ImageUrl"
-                             alt="@item.Name"
-                             class="shop-card__img" />
-
-                        <div class="shop-card__body">
-                            <h3 class="shop-card__name">@item.Name</h3>
-
-                            @if (!string.IsNullOrWhiteSpace(item.Description))
-                            {
-                                <p class="shop-card__desc">@item.Description</p>
-                            }
-
-                            <span class="shop-card__price">@item.Price.ToString("N0") münti</span>
-
-                            <button class="btn-preview" data-item-id="@item.Id">
-                                 Proovi selga
-                            </button>
-                        </div>
-                    </div>
-                }
-            </div>
-        </section>
+        <h2 style="border-bottom: 1px solid #ddd;">@group.Key</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            @foreach (var item in group)
+            {
+                <div class="card" style="border: 1px solid #eee; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <img src="@item.ImageUrl" style="width: 100%; aspect-ratio: 1; object-fit: contain;">
+                    <h3 style="font-size: 1rem; margin: 0.5rem 0;">@item.Name</h3>
+                    <p style="font-weight: bold; color: orange;">@item.Price münti</p>
+                    <button onclick="showPreview('@item.Id')" style="width: 100%; cursor: pointer; background: #3b82f6; color: white; border: none; padding: 5px; border-radius: 4px;">Proovi</button>
+                </div>
+            }
+        </div>
     }
 </div>
 
-<div id="preview-modal" class="modal-backdrop hidden" aria-modal="true" role="dialog">
-    <div class="modal">
-        <button class="modal__close" id="preview-close" aria-label="Sulge">✕</button>
-        <h2 class="modal__title" id="preview-title">Eelvaade</h2>
-
-        {{!-- Kalapulk + ese kuvamine CSS layeritega --}}
-        <div class="preview-stage">
-            <img id="preview-fishstick" src="" alt="Kalapulk" class="preview-fishstick" />
-            <img id="preview-item"      src="" alt="Ese"       class="preview-item" />
+<div id="pv-modal" onclick="this.style.display='none'" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:99; align-items:center; justify-content:center;">
+    <div style="background:white; padding: 2rem; border-radius: 12px; position:relative; width: 300px; text-align: center;" onclick="event.stopPropagation()">
+        <h3 id="pv-title"></h3>
+        <div style="position:relative; width:200px; height:200px; margin:auto;">
+            <img id="pv-fish" src="" style="position:absolute; inset:0; width:100%;">
+            <img id="pv-item" src="" style="position:absolute; inset:0; width:100%; z-index:1;">
         </div>
-
-        <p class="modal__hint">See on ainult eelvaade – midagi ei osteta.</p>
+        <button onclick="document.getElementById('pv-modal').style.display='none'" style="margin-top:1rem;">Sulge</button>
     </div>
 </div>
 
-@section Scripts {
 <script>
-    const modal        = document.getElementById('preview-modal');
-    const closeBtn     = document.getElementById('preview-close');
-    const titleEl      = document.getElementById('preview-title');
-    const fishstickImg = document.getElementById('preview-fishstick');
-    const itemImg      = document.getElementById('preview-item');
+    async function showPreview(id) {
+        const res = await fetch(`/Shop/Preview?itemId=${id}`);
+        if (!res.ok) return;
+        const data = await res.json();
 
-    // Kliki handler kõigil "Proovi selga" nuppudel
-    document.querySelectorAll('.btn-preview').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const itemId = btn.dataset.itemId;
+        document.getElementById('pv-title').textContent = data.message;
+        document.getElementById('pv-fish').src = data.fishstickImageUrl;
+        document.getElementById('pv-item').src = data.itemImageUrl;
+        document.getElementById('pv-modal').style.display = 'flex';
+    }
 
-            try {
-                const res  = await fetch(`/Shop/Preview?itemId=${itemId}`);
-                if (!res.ok) { alert('Eset ei leitud.'); return; }
-
-                const data = await res.json();
-
-                titleEl.textContent      = data.message;
-                fishstickImg.src         = data.fishstickImageUrl;
-                itemImg.src              = data.itemImageUrl;
-
-                modal.classList.remove('hidden');
-            } catch {
-                alert('Eelvaade ebaõnnestus.');
-            }
-        });
-    });
-
-    // Sulge modaal
-    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-    modal.addEventListener('click', e => {
-        if (e.target === modal) modal.classList.add('hidden');
-    });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') modal.classList.add('hidden');
-    });
+    document.addEventListener('keydown', e => e.key === 'Escape' && (document.getElementById('pv-modal').style.display='none'));
 </script>
-}
-
-@section Styles {
-<style>
-    /* ── Kataloog ── */
-    .shop-catalog { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
-    .shop-title   { font-size: 2rem; font-weight: 700; margin-bottom: 2rem; }
-    .shop-section { margin-bottom: 3rem; }
-    .shop-section-title {
-        font-size: 1.25rem; font-weight: 600;
-        border-bottom: 2px solid #e5e7eb;
-        padding-bottom: .5rem; margin-bottom: 1.25rem;
-    }
-    .shop-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 1.25rem;
-    }
-    .shop-card {
-        border: 1px solid #e5e7eb; border-radius: .75rem;
-        overflow: hidden; background: #fff; transition: box-shadow .2s;
-    }
-    .shop-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
-    .shop-card__img {
-        width: 100%; aspect-ratio: 1; object-fit: contain;
-        background: #f9fafb; padding: 1rem;
-    }
-    .shop-card__body { padding: .75rem 1rem 1rem; }
-    .shop-card__name { font-size: .95rem; font-weight: 600; margin: 0 0 .25rem; }
-    .shop-card__desc { font-size: .8rem; color: #6b7280; margin: 0 0 .5rem; }
-    .shop-card__price { display: inline-block; font-size: .9rem; font-weight: 700; color: #f59e0b; }
-
-    .btn-preview {
-        display: block; width: 100%; margin-top: .6rem;
-        padding: .35rem .5rem; border: none; border-radius: .4rem;
-        background: #3b82f6; color: #fff; font-size: .82rem;
-        cursor: pointer; transition: background .15s;
-    }
-    .btn-preview:hover { background: #2563eb; }
-
-    /* ── Modaal ── */
-    .modal-backdrop {
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,.55);
-        display: flex; align-items: center; justify-content: center;
-        z-index: 1000;
-    }
-    .modal-backdrop.hidden { display: none; }
-    .modal {
-        background: #fff; border-radius: 1rem;
-        padding: 2rem; max-width: 420px; width: 90%;
-        position: relative; text-align: center;
-        box-shadow: 0 8px 40px rgba(0,0,0,.2);
-    }
-    .modal__close {
-        position: absolute; top: .75rem; right: .75rem;
-        border: none; background: none; font-size: 1.2rem;
-        cursor: pointer; color: #6b7280;
-    }
-    .modal__title  { font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; }
-    .modal__hint   { font-size: .8rem; color: #9ca3af; margin-top: .75rem; }
-
-    /* ── Eelvaate lava – kalapulk + ese layeritena ── */
-    .preview-stage {
-        position: relative;
-        width: 240px; height: 240px;
-        margin: 0 auto;
-    }
-    .preview-fishstick,
-    .preview-item {
-        position: absolute; inset: 0;
-        width: 100%; height: 100%;
-        object-fit: contain;
-    }
-    .preview-item { z-index: 1; }   /* ese on kalapulga peal */
-</style>
-}
