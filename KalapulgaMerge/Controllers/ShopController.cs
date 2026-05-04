@@ -1,24 +1,26 @@
 ﻿using KalapulgaMerge.ApplicationServices.Services;
 using KalapulgaMerge.Core.Dto;
 using KalapulgaMerge.Core.ServiceInterface;
-using KalapulgaMerge.Models;
+using KalapulgaMerge.Data;
+using KalapulgaMerge.Models.Shop;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KalapulgaMerge.Controllers;
 
 public class ShopController : Controller
 {
     private readonly IShopService _shopService;
-    private readonly IPreviewService _previewService;
+    private readonly IFilesServices _filesServices;
+    private readonly KalapulkDbContext _context;
 
-    public ShopController(IShopService shopService, IPreviewService previewService)
+    public ShopController(IShopService shopService, IFilesServices filesServices, KalapulkDbContext context)
     {
         _shopService = shopService;
-        _previewService = previewService;
+        _filesServices = filesServices;
+        _context = context;
     }
 
-
-    //  Kataloogi kuvamine
     public async Task<IActionResult> Index()
     {
         var items = await _shopService.GetCatalogAsync();
@@ -30,23 +32,16 @@ public class ShopController : Controller
             Description = x.Description,
             Price = x.Price,
             Type = x.Type,
-            ImageUrl = x.ImageUrl
+            Images = x.Images.Select(f => new ImageViewModel
+            {
+                ImageID = f.ImageID,
+                FilePath = f.FilePath,
+                ShopItemID = f.ShopItemID
+            }).ToList()
         });
 
         return View(viewModels);
     }
-    //Preview
-    [HttpGet]
-    public async Task<IActionResult> Preview(int itemId)
-    {
-        var result = await _previewService.GetPreviewAsync(new PreviewRequestDto(itemId));
-
-        if (!result.Success)
-            return NotFound(new { result.Message });
-
-        return Json(result);
-    }
-    //Create
     [HttpGet]
     public IActionResult Create()
     {
@@ -55,20 +50,30 @@ public class ShopController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(ShopItemViewModel vm)
+    public async Task<IActionResult> Create(ShopItemCreateViewModel vm)
     {
-        if (!ModelState.IsValid) return View(vm);
-
-        var dto = new ShopItemDTO
+        if (ModelState.IsValid)
         {
-            Name = vm.Name,
-            Description = vm.Description,
-            Price = vm.Price,
-            Type = vm.Type,
-            ImageUrl = vm.ImageUrl
-        };
+            var dto = new ShopItemDTO
+            {
+                Name = vm.Name,
+                Description = vm.Description,
+                Price = vm.Price,
+                Type = vm.Type,
+                Files = vm.Files 
+            };
 
-        await _shopService.Create(dto);
-        return RedirectToAction("Index"); // Change this to your catalog view name
+            var domain = await _shopService.Create(dto);
+
+            if (domain != null)
+            {
+                _filesServices.FilesToApi(dto, domain);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(vm);
     }
 }
+

@@ -1,4 +1,7 @@
-﻿namespace KalapulgaMerge.Core.Dto;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace KalapulgaMerge.Core.Dto;
+
 
 public class ShopItemDTO
 {
@@ -7,5 +10,7 @@ public class ShopItemDTO
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public string Type { get; set; }
-    public string ImageUrl { get; set; }
+    public List<IFormFile>? Files { get; set; }
+    public IEnumerable<FileToApiDTO>? FileToApiDTOs { get; set; } = new List<FileToApiDTO>();
+    public IEnumerable<FileToApiDTO> Images { get; set; } = new List<FileToApiDTO>();
 }

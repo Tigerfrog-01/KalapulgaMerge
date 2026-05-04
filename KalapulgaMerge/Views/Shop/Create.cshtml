@@ -1,11 +1,12 @@
-﻿@model KalapulgaMerge.Models.ShopItemViewModel
+﻿@model KalapulgaMerge.Models.Shop.ShopItemCreateViewModel
 
 <h1>Loo uus ese</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id" type="hidden" />
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -36,9 +37,9 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label>Vali pildid</label>
+                <input asp-for="Files" type="file" multiple class="form-control" />
+                <span asp-validation-for="Files" class="text-danger"></span>
             </div>
 
             <div class="form-group mt-3">
