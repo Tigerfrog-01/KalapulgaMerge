@@ -1,0 +1,69 @@
+﻿@model KalapulgaMerge.Models.Shop.ShopItemViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+
+    string positionStyle = "";
+
+    if (Model.Type == "Hat")
+    {
+        positionStyle = "top: -5%; width: 55%;";
+    }
+    else if (Model.Type == "Glasses")
+    {
+        positionStyle = "top: 5%; width: 45%;";
+    }
+    else
+    {
+        positionStyle = "top: 45%; width: 40%;";
+    }
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6 d-flex justify-content-center">
+            <div style="position: relative; width: 500px; height: 500px; background: white; border: 2px solid gray; border-radius: 20px;">
+              
+                <img src="~/lib/defaultassets/image/fishstick_base.png"
+                     style="width: 100%; height: 100%; object-fit: contain; z-index: 1;"
+                     alt="Kala" />
+
+                @if (Model.Images.Any())
+                {
+                    <img src="~/multipleFileUpload/@Model.Images.FirstOrDefault()?.FilePath"
+                         style="position: absolute; left: 45%; transform: translateX(-50%); z-index: 2; @positionStyle"
+                         alt="@Model.Name" />
+                }
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Pood</a></li>
+                    <li class="breadcrumb-item active">@Model.Type</li>
+                </ol>
+            </nav>
+
+            <h1 class="display-4">@Model.Name</h1>
+
+
+            <hr />
+
+            <div class="d-flex align-items-center gap-3">
+                <h2 class="text-warning mb-0">@Model.Price münti</h2>
+                <button class="btn btn-primary btn-lg px-5">Osta</button>
+            </div>
+
+            <div class="mt-4 p-3 bg-light rounded">
+                <h5>Eseme andmed:</h5>
+                <ul>
+                    <li>Identifikaator: #@Model.Id</li>
+                    <li>Tüüp: @Model.Type</li>
+                    <li>Lisa Info: @Model.Description</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
