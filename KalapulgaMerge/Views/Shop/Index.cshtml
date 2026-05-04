@@ -3,6 +3,9 @@
     ViewData["Title"] = "Pood";
     var groups = Model.GroupBy(x => x.Type);
 }
+<p>
+    <a asp-action="Create">Loo uus Ese</a>
+</p>
 
 <div style="max-width: 900px; margin: auto; font-family: sans-serif;">
     @foreach (var group in groups)

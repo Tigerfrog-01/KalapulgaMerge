@@ -46,4 +46,29 @@ public class ShopController : Controller
 
         return Json(result);
     }
+    //Create
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(ShopItemViewModel vm)
+    {
+        if (!ModelState.IsValid) return View(vm);
+
+        var dto = new ShopItemDTO
+        {
+            Name = vm.Name,
+            Description = vm.Description,
+            Price = vm.Price,
+            Type = vm.Type,
+            ImageUrl = vm.ImageUrl
+        };
+
+        await _shopService.Create(dto);
+        return RedirectToAction("Index"); // Change this to your catalog view name
+    }
 }

@@ -15,20 +15,38 @@ public class ShopServices : IShopService
         _context = context;
     }
 
-    public async Task<IEnumerable<ShopItemDTO>> GetCatalogAsync()
+public async Task<IEnumerable<ShopItemDTO>> GetCatalogAsync()
+{
+    return await _context.ShopItems
+        .Where(x => x.IsAvailable)
+        .OrderBy(x => x.Type)
+        .ThenBy(x => x.Price)
+        .Select(x => new ShopItemDTO // No parentheses here
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Description = x.Description,
+            Price = x.Price,
+            Type = x.Type.ToString(),
+            ImageUrl = x.ImageUrl
+        })
+        .ToListAsync();
+}
+
+    public async Task<ShopItem> Create(ShopItemDTO dto)
     {
-        return await _context.ShopItems
-            .Where(x => x.IsAvailable)
-            .OrderBy(x => x.Type)
-            .ThenBy(x => x.Price)
-            .Select(x => new ShopItemDTO(
-                x.Id,
-                x.Name,
-                x.Description,
-                x.Price,
-                x.Type.ToString(),
-                x.ImageUrl
-            ))
-            .ToListAsync();
+        var domain = new ShopItem
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            Price = dto.Price,
+            Type = Enum.Parse<ShopItemType>(dto.Type),
+            ImageUrl = dto.ImageUrl,
+            IsAvailable = true
+        };
+        _context.ShopItems.Add(domain);
+        await _context.SaveChangesAsync();
+
+        return domain;
     }
 }

@@ -22,6 +22,7 @@ namespace KalapulgaMerge
             builder.Services.AddScoped<IPreviewService, PreviewService>();
 
 
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
