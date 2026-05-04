@@ -1,59 +1,45 @@
-﻿@model IEnumerable<KalapulgaMerge.Models.ShopItemViewModel>
+﻿@using KalapulgaMerge.Models.Shop
+@model IEnumerable<ShopItemViewModel>
 @{
     ViewData["Title"] = "Pood";
     var groups = Model.GroupBy(x => x.Type);
 }
 
+<p>
+    <a asp-action="Create" class="btn btn-primary">Loo uus Ese</a>
+</p>
+
 <div style="max-width: 900px; margin: auto; font-family: sans-serif;">
     @foreach (var group in groups)
     {
-        <h2 style="border-bottom: 1px solid #ddd;">@group.Key</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <h2 style="border-bottom: 1px solid #ddd; margin-top: 2rem;">@group.Key</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
             @foreach (var item in group)
             {
-                <div class="card" style="border: 1px solid #eee; padding: 1rem; border-radius: 8px; text-align: center;">
-                    <img src="@item.ImageUrl" style="width: 100%; aspect-ratio: 1; object-fit: contain;">
-                    <h3 style="font-size: 1rem; margin: 0.5rem 0;">@item.Name</h3>
-                    <p style="font-weight: bold; color: orange;">@item.Price münti</p>
-                    <button onclick="showPreview('@item.Id')" style="width: 100%; cursor: pointer; background: #3b82f6; color: white; border: none; padding: 5px; border-radius: 4px;">Proovi</button>
+                <div class="card" style="border: 1px solid #eee; padding: 1rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+
+                    <div style="width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #fcfcfc; border-radius: 4px;">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="~/multipleFileUpload/@item.Images.FirstOrDefault()?.FilePath"
+                                 style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                                 alt="@item.Name">
+                        }
+                        else
+                        {
+                            <span style="color: #ccc; font-size: 0.8rem;">Pilt puudub</span>
+                        }
+                    </div>
+
+                    <h3 style="font-size: 1rem; margin: 0.8rem 0 0.3rem 0;">@item.Name</h3>
+                    <p style="font-weight: bold; color: #e67e22; margin-bottom: 0.8rem;">@item.Price münti</p>
+
+                    <a asp-action="Details" asp-route-id="@item.Id"
+                       style="display: block; width: 100%; text-decoration: none; background: #3b82f6; color: white; padding: 8px; border-radius: 4px; font-size: 0.9rem;">
+                        Vaata lähemalt
+                    </a>
                 </div>
             }
         </div>
     }
 </div>
-
-<div id="pv-modal" onclick="this.style.display='none'" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99; align-items:center; justify-content:center;">
-    <div style="background:white; padding:2rem; border-radius:12px; position:relative; width:340px; text-align:center;" onclick="event.stopPropagation()">
-        <h3 id="pv-title" style="margin-top:0"></h3>
-
-        <div style="position:relative; width:300px; height:300px; margin:auto; display:flex; align-items:center; justify-content:center; background:#f9f9f9; border-radius:8px;">
-            <img id="pv-fish" src="" style="width:100%; height:100%; object-fit:contain;">
-            <img id="pv-item" src="" style="position:absolute; width:128px; height:128px; z-index:1; object-fit:contain;">
-        </div>
-
-        <button onclick="document.getElementById('pv-modal').style.display='none'" style="margin-top:1.5rem; cursor:pointer; padding:5px 20px;">Sulge</button>
-    </div>
-</div>
-
-<script>
-    async function showPreview(id) {
-        const res = await fetch(`/Shop/Preview?itemId=${id}`);
-        if (!res.ok) return;
-        const data = await res.json();
-
-        const itemImg = document.getElementById('pv-item');
-
-        // Loogika: kui pealkirjas või tüübis on "prill", pane madalamale
-
-        if (data.message.toLowerCase().includes("prill")) {
-            itemImg.style.top = "15px"; // Prillid silmade kõrgusele
-        } else {
-            itemImg.style.top = "-10px"; // Mütsid pea kohale
-        }
-
-        document.getElementById('pv-title').textContent = data.message;
-        document.getElementById('pv-fish').src = data.fishstickImageUrl;
-        itemImg.src = data.itemImageUrl;
-        document.getElementById('pv-modal').style.display = 'flex';
-    }
-</script>
