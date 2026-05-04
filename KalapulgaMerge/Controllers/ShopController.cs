@@ -75,5 +75,32 @@ public class ShopController : Controller
 
         return View(vm);
     }
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var dto = await _shopService.GetShopItemById(id);
+
+        if (dto == null)
+        {
+            return NotFound();
+        }
+
+        var vm = new ShopItemViewModel
+        {
+            Id = dto.Id,
+            Name = dto.Name,
+            Description = dto.Description,
+            Price = dto.Price,
+            Type = dto.Type,
+            Images = dto.Images.Select(f => new ImageViewModel
+            {
+                ImageID = f.ImageID,
+                FilePath = f.FilePath,
+                ShopItemID = f.ShopItemID
+            }).ToList()
+        };
+
+        return View(vm);
+    }
 }
 

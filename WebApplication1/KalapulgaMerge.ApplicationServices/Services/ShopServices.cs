@@ -60,4 +60,27 @@ public class ShopServices : IShopService
 
         return domain;
     }
+    public async Task<ShopItemDTO> GetShopItemById(int id)
+    {
+        var res = await _context.ShopItems
+            .Select(x => new ShopItemDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                Type = x.Type.ToString(),
+                Images = _context.FilesToApi
+                    .Where(f => f.ShopItemID == x.Id)
+                    .Select(f => new FileToApiDTO
+                    {
+                        ImageID = f.ImageID,
+                        FilePath = f.FilePath,
+                        ShopItemID = f.ShopItemID
+                    }).ToList()
+            })
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        return res;
+    }
 }
