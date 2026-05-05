@@ -8,5 +8,6 @@ public interface IShopService
 
     Task<IEnumerable<ShopItemDTO>> GetCatalogAsync();
     Task<ShopItem> Create(ShopItemDTO dto);
+    Task<ShopItem> Edit(ShopItemDTO dto);
     Task<ShopItemDTO> GetShopItemById(int id);
 }

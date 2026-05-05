@@ -102,5 +102,75 @@ public class ShopController : Controller
 
         return View(vm);
     }
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var dto = await _shopService.GetShopItemById(id);
+        if (dto == null) return NotFound();
+
+        var vm = new ShopItemEditViewModel
+        {
+            Id = dto.Id,
+            Name = dto.Name,
+            Description = dto.Description,
+            Price = dto.Price,
+            Type = dto.Type,
+            ExistingImages = dto.Images.Select(f => new ImageViewModel
+            {
+                ImageID = f.ImageID,
+                FilePath = f.FilePath,
+                ShopItemID = f.ShopItemID
+            }).ToList()
+        };
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(ShopItemEditViewModel vm)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(vm);
+        }
+
+        var dto = new ShopItemDTO
+        {
+            Id = vm.Id,
+            Name = vm.Name,
+            Description = vm.Description,
+            Price = vm.Price,
+            Type = vm.Type,
+            Files = vm.Files
+        };
+
+        var domain = await _shopService.Edit(dto);
+
+        if (domain == null)
+        {
+            return NotFound();
+        }
+
+        if (vm.Files != null && vm.Files.Any())
+        {
+            _filesServices.FilesToApi(dto, domain);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+    [HttpGet] 
+    public async Task<IActionResult> RemoveImage(Guid imageId, int shopItemId)
+    {
+        var dto = new FileToApiDTO { ImageID = imageId };
+        var image = await _filesServices.RemoveImageFromApi(dto);
+
+        if (image == null)
+        {
+            return RedirectToAction(nameof(Edit), new { id = shopItemId });
+        }
+
+        return RedirectToAction(nameof(Edit), new { id = shopItemId });
+    }
 }
 
