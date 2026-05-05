@@ -1,0 +1,43 @@
+﻿@model KalapulgaMerge.Models.Shop.ShopItemDeleteViewModel
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Kustutamise kinnitamine</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h5>Kas oled kindel, et soovid kustutada selle eseme?</h5>
+                    <hr />
+                    
+                    @if (!string.IsNullOrEmpty(Model.MainImagePath))
+                    {
+                        <img src="~/multipleFileUpload/@Model.MainImagePath"
+                             class="img-thumbnail mb-3"
+                             style="max-height: 200px;" />
+                    }
+
+                    <dl class="row text-start">
+                        <dt class="col-sm-4">Nimi:</dt>
+                        <dd class="col-sm-8">@Model.Name</dd>
+
+                        <dt class="col-sm-4">Tüüp:</dt>
+                        <dd class="col-sm-8">@Model.Type</dd>
+
+                        <dt class="col-sm-4">Hind:</dt>
+                        <dd class="col-sm-8">@Model.Price münti</dd>
+                    </dl>
+
+                    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2 d-md-block mt-4">
+                            <button type="submit" class="btn btn-danger btn-lg px-5">Jah, kustuta</button>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg px-5">Tühista</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

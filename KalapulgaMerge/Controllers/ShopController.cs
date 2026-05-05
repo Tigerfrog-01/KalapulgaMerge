@@ -172,5 +172,43 @@ public class ShopController : Controller
 
         return RedirectToAction(nameof(Edit), new { id = shopItemId });
     }
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var dto = await _shopService.GetShopItemById(id);
+        if (dto == null) return NotFound();
+
+        var vm = new ShopItemDeleteViewModel
+        {
+            Id = dto.Id,
+            Name = dto.Name,
+            Type = dto.Type,
+            Price = dto.Price,
+            MainImagePath = dto.Images.FirstOrDefault()?.FilePath
+        };
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var dto = await _shopService.GetShopItemById(id);
+
+        if (dto != null)
+        {
+            // 1. Kustutame failid kettalt ja FilesToApi tabelist
+            foreach (var img in dto.Images)
+            {
+                await _filesServices.RemoveImageFromApi(img);
+            }
+
+            // 2. Kustutame eseme ShopItems tabelist
+            await _shopService.Delete(id);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }
 
