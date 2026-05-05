@@ -5,48 +5,108 @@
     var groups = Model.GroupBy(x => x.Type);
 }
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Loo uus Ese</a>
-</p>
-
 <div style="max-width: 900px; margin: auto; font-family: sans-serif;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a asp-action="Create" class="btn btn-primary">Loo uus Ese</a>
+        </div>
+        
+        <div class="d-flex gap-3 mt-3">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary active" onclick="filterShop('All', this)">Kõik</button>
+                @foreach (var type in Model.Select(x => x.Type).Distinct())
+                {
+                    <button type="button" class="btn btn-outline-secondary" onclick="filterShop('@type', this)">@type</button>
+                }
+            </div>
+            <select class="form-select" style="width: auto;" onchange="sortAllGroups(this.value)">
+                <option value="default">Sorteeri: Tavaline</option>
+                <option value="low">Hind: Odavamad enne</option>
+                <option value="high">Hind: Kallimad enne</option>
+            </select>
+        </div>
+    </div>
+
     @foreach (var group in groups)
     {
-        <h2 style="border-bottom: 1px solid #ddd; margin-top: 2rem;">@group.Key</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            @foreach (var item in group)
-            {
-                <div class="card" style="border: 1px solid #eee; padding: 1rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <div class="shop-group-section" data-group-type="@group.Key">
+            <h2 style="border-bottom: 1px solid #ddd; margin-top: 2rem;">@group.Key</h2>
+            <div class="items-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                @foreach (var item in group)
+                {
+                    <div class="card shop-item-card" data-price="@item.Price.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" style="border: 1px solid #eee; padding: 1rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div style="width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #fcfcfc; border-radius: 4px;">
+                            @if (item.Images != null && item.Images.Any())
+                            {
+                                <img src="~/multipleFileUpload/@item.Images.FirstOrDefault()?.FilePath"
+                                     style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                                     alt="@item.Name">
+                                }
+                            else
+                                {
+                                    <span style="color: #ccc; font-size: 0.8rem;">Pilt puudub</span>
+                                }
+                            </div>
 
-                    <div style="width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #fcfcfc; border-radius: 4px;">
-                        @if (item.Images != null && item.Images.Any())
-                        {
-                            <img src="~/multipleFileUpload/@item.Images.FirstOrDefault()?.FilePath"
-                                 style="max-width: 100%; max-height: 100%; object-fit: contain;"
-                                 alt="@item.Name">
-                        }
-                        else
-                        {
-                            <span style="color: #ccc; font-size: 0.8rem;">Pilt puudub</span>
-                        }
-                    </div>
+                            <h3 style="font-size: 1rem; margin: 0.8rem 0 0.3rem 0;">@item.Name</h3>
+                            <p style="font-weight: bold; color: #e67e22; margin-bottom: 0.8rem;">@item.Price münti</p>
 
-                    <h3 style="font-size: 1rem; margin: 0.8rem 0 0.3rem 0;">@item.Name</h3>
-                    <p style="font-weight: bold; color: #e67e22; margin-bottom: 0.8rem;">@item.Price münti</p>
-
-                    <a asp-action="Details" asp-route-id="@item.Id"
-                       style="display: block; width: 100%; text-decoration: none; background: #3b82f6; color: white; padding: 8px; border-radius: 4px; font-size: 0.9rem;">
-                        Vaata lähemalt
-                    </a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
-                            Muuda
-                        </a>
-
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
-                            Kustuta
-                        </a>
+                            <div class="d-flex flex-column gap-2">
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                       style="text-decoration: none; background: #3b82f6; color: white; padding: 8px; border-radius: 4px; font-size: 0.9rem;">
+                                    Vaata lähemalt
+                                </a>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm w-100">Muuda</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm w-100">Kustuta</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
+            </div>
+        }
+    </div>
+
+    @section Scripts {
+        <script>
+            function filterShop(type, btn) {
+                const buttons = document.querySelectorAll('.btn-group .btn');
+                buttons.forEach(b => b.classList.remove('active', 'btn-secondary', 'text-white'));
+                buttons.forEach(b => b.classList.add('btn-outline-secondary'));
+            
+                btn.classList.add('active', 'btn-secondary', 'text-white');
+                btn.classList.remove('btn-outline-secondary');
+
+                const sections = document.querySelectorAll('.shop-group-section');
+                sections.forEach(section => {
+                    if (type === 'All' || section.getAttribute('data-group-type') === type) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
             }
-        </div>
+
+            function sortAllGroups(order) {
+                if (order === "default") return;
+
+                const grids = document.querySelectorAll('.items-grid');
+
+                grids.forEach(grid => {
+
+                    const cards = Array.from(grid.querySelectorAll('.shop-item-card'));
+
+                    cards.sort((a, b) => {
+                        const priceA = parseFloat(a.getAttribute('data-price'));
+                        const priceB = parseFloat(b.getAttribute('data-price'));
+
+                        return order === 'low' ? priceA - priceB : priceB - priceA;
+                    });
+
+                    grid.innerHTML = "";
+                    cards.forEach(card => grid.appendChild(card));
+                });
+            }
+        </script>
     }
-</div>
