@@ -1,0 +1,58 @@
+﻿@model KalapulgaMerge.Models.Shop.ShopItemEditViewModel
+
+<div class="container">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label asp-for="Price"></label>
+                        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    </div>
+                    <div class="col">
+                        <label asp-for="Type"></label>
+                        <select asp-for="Type" class="form-control"
+                                asp-items="Html.GetEnumSelectList<KalapulgaMerge.Core.Domain.ShopItemType>()">
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label asp-for="Files">Lisa uued pildid (valikuline)</label>
+                    <input asp-for="Files" type="file" multiple class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h4>Praegused pildid</h4>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var img in Model.ExistingImages)
+                    {
+                        <div class="border p-2">
+                            <img src="~/multipleFileUpload/@img.FilePath" style="width: 100px; height: 100px; object-fit: contain;" />
+                            <div class="mt-2 text-center">
+                                <a asp-action="RemoveImage" asp-route-imageId="@img.ImageID" asp-route-shopItemId="@Model.Id" class="btn btn-danger btn-sm">X</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success">Salvesta</button>
+            <a asp-action="Index" class="btn btn-secondary">Tagasi</a>
+        </div>
+    </form>
+</div>

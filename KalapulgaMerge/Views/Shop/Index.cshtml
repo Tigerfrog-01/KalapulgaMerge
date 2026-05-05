@@ -38,6 +38,13 @@
                        style="display: block; width: 100%; text-decoration: none; background: #3b82f6; color: white; padding: 8px; border-radius: 4px; font-size: 0.9rem;">
                         Vaata lähemalt
                     </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
+                            Muuda
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+                            Kustuta
+                        </a>
                 </div>
             }
         </div>

@@ -83,4 +83,20 @@ public class ShopServices : IShopService
 
         return res;
     }
+    public async Task<ShopItem> Edit(ShopItemDTO dto)
+    {
+        var domain = await _context.ShopItems.FindAsync(dto.Id);
+
+        if (domain == null) return null;
+
+        domain.Name = dto.Name;
+        domain.Description = dto.Description;
+        domain.Price = dto.Price;
+        domain.Type = Enum.Parse<ShopItemType>(dto.Type);
+
+        _context.ShopItems.Update(domain);
+        await _context.SaveChangesAsync();
+
+        return domain;
+    }
 }
