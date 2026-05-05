@@ -99,4 +99,15 @@ public class ShopServices : IShopService
 
         return domain;
     }
+    public async Task<ShopItem> Delete(int id)
+    {
+        var domain = await _context.ShopItems.FindAsync(id);
+        if (domain != null)
+        {
+            _context.ShopItems.Remove(domain);
+            await _context.SaveChangesAsync();
+        }
+        return domain;
+    }
+
 }
