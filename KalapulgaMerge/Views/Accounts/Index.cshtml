@@ -5,4 +5,22 @@
 <h2>Dashboard</h2>
 <p>You are logged in as: <strong>@ViewBag.UserEmail</strong></p>
 
-<a href="/Accounts/Login">Click here to Logout</a>
+<div>
+    <h4>Profile Picture</h4>
+    @if (ViewBag.ProfilePic != null)
+    {
+        <img src="@ViewBag.ProfilePic" style="width:150px; height:150px; border-radius:50%; object-fit:cover;" />
+    }
+    else
+    {
+        <div style="width:150px; height:150px; background:#ccc; border-radius:50%; display:flex; align-items:center; justify-content:center;">No Image</div>
+    }
+
+    <form method="post" action="/Accounts/UploadPicture" enctype="multipart/form-data" style="margin-top:10px;">
+        <input type="file" name="photo" accept="image/*" required />
+        <button type="submit">Change Picture</button>
+    </form>
+</div>
+
+<br />
+<a href="/Accounts/Logout">Logout</a>

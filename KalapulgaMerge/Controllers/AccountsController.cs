@@ -15,11 +15,17 @@ namespace Filminurk.Controllers
             public string Password { get; set; }
         }
 
+        private readonly IWebHostEnvironment _env;
+        public AccountsController(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
         public IActionResult Index()
         {
             var userEmail = HttpContext.Session.GetString("UserEmail");
             if (string.IsNullOrEmpty(userEmail)) return RedirectToAction("Login");
             ViewBag.UserEmail = userEmail;
+            ViewBag.ProfilePic = HttpContext.Session.GetString("UserProfilePic");
             return View();
         }
 
@@ -49,6 +55,8 @@ namespace Filminurk.Controllers
         {
             var user = _users.FirstOrDefault(u => u.Email == email);
 
+           
+
             if (user == null)
             {
                 ViewBag.Error = "Account does not exist";
@@ -62,6 +70,36 @@ namespace Filminurk.Controllers
             }
 
             HttpContext.Session.SetString("UserEmail", user.Email);
+            return RedirectToAction("Index");
+
+          
+
+        }
+
+        [HttpPost]
+        public IActionResult UploadPicture(IFormFile photo)
+        {
+            if (photo != null && photo.Length > 0)
+            {
+              
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+            
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+              
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    photo.CopyTo(stream);
+                }
+
+                
+                var relativePath = "/uploads/" + fileName;
+                HttpContext.Session.SetString("UserProfilePic", relativePath);
+            }
+
             return RedirectToAction("Index");
         }
     }
