@@ -22,6 +22,9 @@ namespace KalapulgaMerge
 
             builder.Services.AddScoped<IFilesServices, FilesServices>();
 
+            builder.Services.AddSession();
+
+          
 
 
             var app = builder.Build();
@@ -40,6 +43,8 @@ namespace KalapulgaMerge
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",
