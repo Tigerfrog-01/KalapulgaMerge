@@ -1,33 +1,15 @@
 ﻿@{
-    ViewBag.Title = "Kasutaja Registeerimine";
+    ViewData["Title"] = "Register";
 }
-<h2>Registeeri ennast</h2>
+<h2>Register</h2>
 
-<hr />
-<div class="row">
-    <div class="col-md-12">
-        <form id="registrationForm" method="post" action="/YourTargetAction">
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
 
-            <h1>Sisesta oma email</h1>
-            <input type="email" name="userEmail" value="" class="form-control" />
-
-            <br />
-
-            <button type="submit" class="btn btn-primary">
-                Registeeru
-            </button>
-
-        </form>
-    </div>
-</div>
-
-<script>
-   
-    document.getElementById('registrationForm').onsubmit = function(e) {
-        const userConfirmed = confirm("KALAPULK ON PARIM KALAPULK ON PARIM KALAPULK ON PARIM");
-
-        if (!userConfirmed) {
-            e.preventDefault(); 
-        }
-    };
-</script>
+<form method="post" action="/Accounts/Register">
+    <input name="email" type="email" placeholder="Email" required /><br />
+    <input name="password" type="password" placeholder="Password" required /><br />
+    <button type="submit">Register</button>
+</form>
