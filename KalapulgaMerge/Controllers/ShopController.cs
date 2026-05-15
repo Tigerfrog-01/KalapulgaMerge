@@ -23,24 +23,32 @@ public class ShopController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var items = await _shopService.GetCatalogAsync();
-
-        var viewModels = items.Select(x => new ShopItemViewModel
+        try
         {
-            Id = x.Id,
-            Name = x.Name,
-            Description = x.Description,
-            Price = x.Price,
-            Type = x.Type,
-            Images = x.Images.Select(f => new ImageViewModel
-            {
-                ImageID = f.ImageID,
-                FilePath = f.FilePath,
-                ShopItemID = f.ShopItemID
-            }).ToList()
-        });
+            var items = await _shopService.GetCatalogAsync();
 
-        return View(viewModels);
+            var viewModels = items.Select(x => new ShopItemViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                Type = x.Type,
+                Images = x.Images.Select(f => new ImageViewModel
+                {
+                    ImageID = f.ImageID,
+                    FilePath = f.FilePath,
+                    ShopItemID = f.ShopItemID
+                }).ToList()
+            });
+
+            return View(viewModels);
+        }
+        catch
+        {
+            ViewBag.ShopNotice = "Pood kasutab hetkel vaikimisi esemeid, sest andmebaasi kataloogi ei saanud laadida.";
+            return View(GetFallbackShopItems());
+        }
     }
     [HttpGet]
     public IActionResult Create()
@@ -78,6 +86,17 @@ public class ShopController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
+        if (id < 0)
+        {
+            var fallbackItem = GetFallbackShopItems().FirstOrDefault(x => x.Id == id);
+            if (fallbackItem == null)
+            {
+                return NotFound();
+            }
+
+            return View(fallbackItem);
+        }
+
         var dto = await _shopService.GetShopItemById(id);
 
         if (dto == null)
@@ -209,6 +228,61 @@ public class ShopController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    private static List<ShopItemViewModel> GetFallbackShopItems()
+    {
+        return new List<ShopItemViewModel>
+        {
+            new()
+            {
+                Id = -1,
+                Name = "Classic Fish Stick",
+                Description = "Vaikimisi Merge tegelase alus.",
+                Price = 0,
+                Type = "Color",
+                Images = new List<ImageViewModel>
+                {
+                    new() { FilePath = "lib/defaultassets/image/fishstick_base.png" }
+                }
+            },
+            new()
+            {
+                Id = -2,
+                Name = "Shop Hat",
+                Description = "Kerge kosmeetiline ese Merge tegelasele.",
+                Price = 25,
+                Type = "Hat",
+                Images = new List<ImageViewModel>
+                {
+                    new() { FilePath = "lib/defaultassets/image/shop1.png" }
+                }
+            },
+            new()
+            {
+                Id = -3,
+                Name = "Bright Glasses",
+                Description = "Lisab mängule rohkem iseloomu.",
+                Price = 50,
+                Type = "Glasses",
+                Images = new List<ImageViewModel>
+                {
+                    new() { FilePath = "lib/defaultassets/image/shop2.png" }
+                }
+            },
+            new()
+            {
+                Id = -4,
+                Name = "Golden Style",
+                Description = "Silmapaistev valik suuremate skooride jaoks.",
+                Price = 100,
+                Type = "Color",
+                Images = new List<ImageViewModel>
+                {
+                    new() { FilePath = "lib/defaultassets/image/shop3.png" }
+                }
+            }
+        };
     }
 }
 
