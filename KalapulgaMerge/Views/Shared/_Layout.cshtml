@@ -1,98 +1,96 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Kalapulga merge</title>
+    <title>@ViewData["Title"] - Kalapulga Merge</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Filminurk.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/KalapulgaMerge.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Kalapulgamerge</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+<body class="app-shell">
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg app-navbar">
+            <div class="container-fluid nav-shell">
+                <a class="navbar-brand brand-lockup" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">M</span>
+                    <span class="brand-copy">
+                        <span class="brand-title">Kalapulga Merge</span>
+                        <span class="brand-subtitle">merge arcade</span>
+                    </span>
+                </a>
+                <button class="navbar-toggler app-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse app-nav-collapse" id="mainNavigation">
+                    <ul class="navbar-nav app-nav-main">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Avaleht</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Register">Registeeru</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Avaleht</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Login">Logi sisse</a>
+                            <a class="nav-link nav-play" asp-area="" asp-controller="Merge" asp-action="Index">Merge</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="GameAdminPanel" asp-action="Index">Admin Panel</a>
+                            <a class="nav-link" asp-area="" asp-controller="Shop" asp-action="Index">Pood</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AntiCheat" asp-action="Index">PlayMe</a>
+                            <a class="nav-link" asp-area="" asp-controller="Leaderboard" asp-action="Leaderboard">Leaderboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Index">Pood</a>
+                            <a class="nav-link" asp-area="" asp-controller="Game" asp-action="Index">Game</a>
                         </li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SaveMyStuff" asp-action="Index">SaveMyShit</a>
+                    </ul>
+                    <ul class="navbar-nav app-nav-actions">
+                        <li class="nav-item">
+                            <a class="nav-link tools-link" asp-area="" asp-controller="GameAdminPanel" asp-action="Index">Admin</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link tools-link" asp-area="" asp-controller="AntiCheat" asp-action="Index">PlayMe</a>
                         </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="KeepMeSecure" asp-action="Index">KeepMeSecure</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle tools-link" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Tools
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end app-dropdown" aria-labelledby="toolsDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="SaveMyStuff" asp-action="Index">SaveMyStuff</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="KeepMeSecure" asp-action="Index">KeepMeSecure</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="SufferBox" asp-action="Index">SufferBox</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="RoundChecker" asp-action="Index">RoundChecker</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="TournamentChecker" asp-action="Index">TournamentChecker</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Sound" asp-action="Index">Heli</a></li>
+                            </ul>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link auth-link" asp-area="" asp-controller="Accounts" asp-action="Login">Logi sisse</a>
                         </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Leaderboard" asp-action="Leaderboard">Leaderboard</a>
+                        <li class="nav-item">
+                            <a class="nav-link auth-link auth-register" asp-area="" asp-controller="Accounts" asp-action="Register">Registeeru</a>
                         </li>
-                        </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="SufferBox" asp-action="Index">SufferBox</a>
-                        </li>
-                           </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="RoundChecker" asp-action="Index">RoundChecker</a>
-                        </li>
-                        </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Index">Game</a>
-                        </li>
-                        </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Merge" asp-action="Index">Mergei</a>
-                        </li>
-                        </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="TournamentChecker" asp-action="Index">TournamentChecker</a>
-                        </li>                        
-                        </li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Sound" asp-action="Index">Heli</a>
-                        </li>
-
-                     
-                     
-                
-                      
-                
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="page-frame">
+        <main role="main" class="app-main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - kalapulgamerge - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="site-footer">
+        <div class="container-fluid footer-shell">
+            <span>&copy; 2026 - Kalapulga Merge</span>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Styles", required: false)
     @await RenderSectionAsync("Scripts", required: false)
-
-
-
 </body>
 </html>

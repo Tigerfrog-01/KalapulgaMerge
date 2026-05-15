@@ -1,17 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Avaleht";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="home-hub">
+    <div class="home-title-block">
+        <span class="home-eyebrow">Arcade hub</span>
+        <h1>Kalapulga Merge</h1>
+    </div>
 
-
-<div class="h1">Menüü</div>
-
-<div class="mb-1">
-    <a asp-action="Index" asp-controller="Game" class="btn btn-primary">Mäng</a>
-    <a asp-action="Index" asp-controller="Shop" class="btn btn-primary">Pood</a>
-    <a asp-action="Leaderboard" asp-controller="Leaderboard" class="btn btn-primary">Leaderboard</a>
-</div>
+    <div class="home-action-grid">
+        <a asp-action="Index" asp-controller="Merge" class="home-action home-action-primary">
+            <span class="home-action-mark">M</span>
+            <span>Play Merge</span>
+        </a>
+        <a asp-action="Index" asp-controller="Shop" class="home-action">
+            <span class="home-action-mark">S</span>
+            <span>Pood</span>
+        </a>
+        <a asp-action="Leaderboard" asp-controller="Leaderboard" class="home-action">
+            <span class="home-action-mark">L</span>
+            <span>Leaderboard</span>
+        </a>
+        <a asp-action="Index" asp-controller="Game" class="home-action">
+            <span class="home-action-mark">G</span>
+            <span>Game</span>
+        </a>
+    </div>
+</section>
