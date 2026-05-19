@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,9 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="app-shell">
+    @{
+        var isAdmin = Context.Session.GetString("IsAdmin") == "true";
+    }
     <header class="site-header">
         <nav class="navbar navbar-expand-lg app-navbar">
             <div class="container-fluid nav-shell">
@@ -45,7 +49,7 @@
                     </ul>
                     <ul class="navbar-nav app-nav-actions">
                         <li class="nav-item">
-                            <a class="nav-link tools-link" asp-area="" asp-controller="GameAdminPanel" asp-action="Index">Admin</a>
+                            <a class="nav-link tools-link" asp-area="" asp-controller="GameAdminPanel" asp-action="Index">Panel</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link tools-link" asp-area="" asp-controller="AntiCheat" asp-action="Index">PlayMe</a>
@@ -62,6 +66,15 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="TournamentChecker" asp-action="Index">TournamentChecker</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Sound" asp-action="Index">Heli</a></li>
                             </ul>
+                        </li>
+                        @if (isAdmin)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link auth-link auth-users" asp-area="" asp-controller="Accounts" asp-action="Users">Users</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link auth-link auth-admin @(isAdmin ? "auth-admin-on" : "")" asp-area="" asp-controller="Accounts" asp-action="SwitchAdmin">@(isAdmin ? "Admin on" : "Admin")</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link auth-link" asp-area="" asp-controller="Accounts" asp-action="Login">Logi sisse</a>

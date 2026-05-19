@@ -171,6 +171,21 @@ a:hover {
   box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.16);
 }
 
+.auth-admin-on,
+.auth-users {
+  color: #fff;
+  background: linear-gradient(135deg, var(--merge-coral), #b9452f);
+  border-color: rgba(30, 37, 39, 0.16);
+  box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.18);
+}
+
+.auth-admin-on:hover,
+.auth-users:hover,
+.auth-admin-on:focus,
+.auth-users:focus {
+  color: #fff;
+}
+
 .app-toggler {
   border-color: rgba(30, 37, 39, 0.2);
   border-radius: 8px;
@@ -508,6 +523,100 @@ h4 {
   color: var(--merge-muted);
 }
 
+.admin-users-page,
+.admin-edit-page {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-users-header,
+.admin-users-table,
+.admin-edit-page {
+  padding: 18px;
+  border: 1px solid rgba(255, 250, 240, 0.72);
+  border-radius: 8px;
+  background: rgba(255, 250, 240, 0.86);
+  box-shadow: 0 14px 34px rgba(30, 37, 39, 0.1);
+}
+
+.admin-users-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-users-header h1,
+.admin-edit-page h1 {
+  margin: 0;
+}
+
+.admin-search-form {
+  width: min(460px, 100%);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  gap: 10px;
+}
+
+.admin-search-form input {
+  margin: 0;
+}
+
+.admin-users-table {
+  overflow-x: auto;
+}
+
+.admin-users-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-users-table th,
+.admin-users-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--merge-line);
+  text-align: left;
+}
+
+.admin-users-table th {
+  color: var(--merge-teal-dark);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.admin-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-row-form {
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  margin: 0;
+}
+
+.admin-edit-form {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-edit-form input {
+  margin-bottom: 6px;
+}
+
+.admin-edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
 .btn-primary,
 button[type="submit"] {
   border: 0;
@@ -593,6 +702,14 @@ textarea:focus {
 
   .shop-sort {
     width: 100%;
+  }
+
+  .admin-users-header,
+  .admin-search-form,
+  .admin-table-actions,
+  .admin-edit-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
 

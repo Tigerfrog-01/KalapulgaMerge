@@ -15,6 +15,8 @@ namespace KalapulgaMerge.Data
 
         public DbSet<ShopItem> ShopItems { get; set; }
 
+        public DbSet<UserAccount> UserAccounts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -25,16 +27,19 @@ namespace KalapulgaMerge.Data
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
                 entity.Property(e => e.Type).HasConversion<int>();
+            });
 
-                //////// Seed – testandmed
-                //////entity.HasData(
-                //////    new ShopItem { Id = 1, Name = "Punane müts", Type = ShopItemType.Hat, Price = 500, ImageUrl = "lib/defaultassets/image/shop1.png", IsAvailable = true },
-                new ShopItem { Id = 2, Name = "Sinine müts", Type = ShopItemType.Hat, Price = 500 };
-            }
-                 
-                );
-            }
+            modelBuilder.Entity<UserAccount>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Password).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.ProfilePicPath).HasMaxLength(300);
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime2");
+                entity.HasIndex(e => e.Email).IsUnique();
+            });
         }
     }
-
+}
 
