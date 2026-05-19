@@ -1,4 +1,5 @@
-﻿@model KalapulgaMerge.Models.Shop.ShopItemViewModel
+﻿
+@model KalapulgaMerge.Models.Shop.ShopItemViewModel
 
 @{
     ViewData["Title"] = Model.Name;
@@ -17,25 +18,6 @@
     {
         positionStyle = "top: 45%; width: 40%;";
     }
-
-    string GetImageUrl(string? filePath)
-    {
-        if (string.IsNullOrWhiteSpace(filePath))
-        {
-            return "";
-        }
-
-        var normalized = filePath.Replace("\\", "/").TrimStart('/');
-
-        if (normalized.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) ||
-            normalized.StartsWith("uploads/", StringComparison.OrdinalIgnoreCase) ||
-            normalized.StartsWith("multipleFileUpload/", StringComparison.OrdinalIgnoreCase))
-        {
-            return Url.Content("~/" + normalized);
-        }
-
-        return Url.Content("~/multipleFileUpload/" + normalized);
-    }
 }
 
 <div class="container py-5">
@@ -49,7 +31,7 @@
 
                 @if (Model.Images.Any())
                 {
-                    <img src="@GetImageUrl(Model.Images.FirstOrDefault()?.FilePath)"
+                    <img src="~/multipleFileUpload/@Model.Images.FirstOrDefault()?.FilePath"
                          style="position: absolute; left: 45%; transform: translateX(-50%); z-index: 2; @positionStyle"
                          alt="@Model.Name" />
                 }
@@ -78,7 +60,7 @@
             <div class="mt-4 p-3 bg-light rounded">
                 <h5>Eseme andmed:</h5>
                 <ul>
-                    <li>Identifikaator: #@Model.Id</li>
+                    <li>ID #@Model.Id</li>
                     <li>Tüüp: @Model.Type</li>
                     <li>Lisa Info: @Model.Description</li>
                 </ul>
