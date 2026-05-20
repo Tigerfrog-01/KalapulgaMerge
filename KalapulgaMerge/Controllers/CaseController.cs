@@ -31,6 +31,66 @@ namespace KalapulgaMerge.Controllers
 
             return View(vms);
         }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new CaseCreateViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CaseCreateViewModel vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            var dto = new CaseDTO
+            {
+                CaseID = vm.CaseID,
+                UserID = vm.UserID,
+                Description = vm.Description,
+                CurrentCaseStatus = vm.CurrentCaseStatus
+            };
+
+            await _caseService.CreateAsync(dto);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var dto = await _caseService.GetCaseByIdAsync(id);
+            if (dto == null) return NotFound();
+
+            var vm = new CaseUpdateViewModel
+            {
+                CaseID = dto.CaseID,
+                UserID = dto.UserID,
+                Description = dto.Description,
+                CurrentCaseStatus = dto.CurrentCaseStatus
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(CaseUpdateViewModel vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            var dto = new CaseDTO
+            {
+                CaseID = vm.CaseID,
+                UserID = vm.UserID,
+                Description = vm.Description,
+                CurrentCaseStatus = vm.CurrentCaseStatus
+            };
+
+            var result = await _caseService.UpdateAsync(dto);
+            if (result == null) return NotFound();
+
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

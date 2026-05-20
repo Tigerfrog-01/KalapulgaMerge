@@ -1,0 +1,30 @@
+﻿@model KalapulgaMerge.Models.Case.CaseUpdateViewModel
+
+<div class="container py-4" style="max-width: 600px; font-family: sans-serif;">
+    <div class="h1 mb-4">Uuenda Juhtumit</div>
+
+    <form asp-action="Update" method="post">
+        <input type="hidden" asp-for="CaseID" />
+
+        <div class="mb-3">
+            <label asp-for="UserID" class="form-label">Kasutaja ID</label>
+            <input asp-for="UserID" class="form-control" type="number" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Kirjeldus</label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CurrentCaseStatus" class="form-label">Staatus</label>
+            <select asp-for="CurrentCaseStatus" class="form-select" asp-items="Html.GetEnumSelectList<KalapulgaMerge.Core.Domain.CaseStatus>()">
+            </select>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Uuenda</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Tühista</a>
+        </div>
+    </form>
+</div>

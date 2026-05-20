@@ -39,6 +39,34 @@ public class CaseService : ICaseService
             })
             .FirstOrDefaultAsync();
     }
+    public async Task<CaseItem> CreateAsync(CaseDTO dto)
+    {
+        var domain = new CaseItem
+        {
+            CaseID = Guid.NewGuid(),
+            UserID = dto.UserID,
+            Description = dto.Description,
+            CurrentCaseStatus = dto.CurrentCaseStatus
+        };
 
-   
+        _context.Cases.Add(domain);
+        await _context.SaveChangesAsync();
+        return domain;
+    }
+
+    public async Task<CaseItem> UpdateAsync(CaseDTO dto)
+    {
+        var domain = await _context.Cases.FindAsync(dto.CaseID);
+        if (domain == null) return null;
+
+        domain.UserID = dto.UserID;
+        domain.Description = dto.Description;
+        domain.CurrentCaseStatus = dto.CurrentCaseStatus;
+
+        _context.Cases.Update(domain);
+        await _context.SaveChangesAsync();
+        return domain;
+    }
+
+
 }
