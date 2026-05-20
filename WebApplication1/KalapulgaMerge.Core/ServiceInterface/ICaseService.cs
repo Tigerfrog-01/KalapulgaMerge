@@ -12,6 +12,8 @@ namespace KalapulgaMerge.Core.ServiceInterface
     {
         Task<IEnumerable<CaseDTO>> GetCasesAsync();
         Task<CaseDTO> GetCaseByIdAsync(Guid id);
+        Task<CaseItem> CreateAsync(CaseDTO dto);
+        Task<CaseItem> UpdateAsync(CaseDTO dto);
 
     }
 }

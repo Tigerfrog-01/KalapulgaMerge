@@ -28,12 +28,12 @@
             {
                 <tr>
                     <td>@rowNumber</td>
-                    <td>@item.CaseID.ToString().Substring(0, 8)...</td>
+                    <td>@item.CaseID</td>
                     <td>@item.UserID</td>
                     <td>@item.Description</td>
                     <td>@item.CurrentCaseStatus</td>
                     <td>
-                        <a asp-action="Edit" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-primary btn-sm">Uuenda</a>
+                        <a asp-action="Update" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-primary btn-sm">Uuenda</a>
                         <a asp-action="Delete" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-outline-danger btn-sm">Eemalda</a>
                     </td>
                 </tr>
