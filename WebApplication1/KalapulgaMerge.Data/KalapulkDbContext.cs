@@ -46,21 +46,23 @@ namespace KalapulgaMerge.Data
             modelBuilder.Entity<MergePlayerState>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserAccountId).IsRequired();
                 entity.Property(e => e.PlayerName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.UnlockedItemsJson).IsRequired();
                 entity.Property(e => e.ActiveEquipmentJson).IsRequired();
                 entity.Property(e => e.Theme).IsRequired().HasMaxLength(40);
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime2");
-                entity.HasIndex(e => e.PlayerName).IsUnique();
+                entity.HasIndex(e => e.UserAccountId).IsUnique();
             });
 
             modelBuilder.Entity<MergeScore>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserAccountId).IsRequired();
                 entity.Property(e => e.PlayerName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Mode).IsRequired().HasMaxLength(40);
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime2");
-                entity.HasIndex(e => new { e.PlayerName, e.Mode }).IsUnique();
+                entity.HasIndex(e => new { e.UserAccountId, e.Mode }).IsUnique();
             });
         }
     }

@@ -1,5 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
+@{
+    var mergePlayerName = ViewBag.PlayerName as string ?? "Player";
+}
 <head>
     <style>
         :root {
@@ -317,9 +320,10 @@
             position: relative;
             z-index: 14;
             color: var(--number-color, var(--tile-text));
-            background: var(--number-bg, rgba(255, 250, 240, 0.7));
+            background: rgba(255, 250, 240, 0.18);
             border-radius: 8px;
             padding: 2px 8px;
+            text-shadow: 0 1px 0 rgba(255, 250, 240, 0.8), 0 2px 8px rgba(31, 37, 41, 0.46);
         }
 
         .tile-accessory,
@@ -439,13 +443,18 @@
             text-shadow: 0 6px 0 rgba(31, 37, 41, 0.22);
         }
 
-        #username {
+        #account-name {
             border: 1px solid rgba(255, 250, 240, 0.76) !important;
             border-radius: 8px !important;
             background: rgba(255, 250, 240, 0.96) !important;
             color: var(--ink);
             box-shadow: 0 16px 36px rgba(31, 37, 41, 0.16);
             outline: 0;
+            min-width: 280px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 900;
         }
 
         .lock-overlay {
@@ -556,7 +565,7 @@
 
     <div id="login-screen">
         <h1 style="font-size: 55px; margin-bottom: 10px;">KALAPULK 2048</h1>
-        <input type="text" id="username" placeholder="Enter Name..." style="padding:15px; border-radius:12px; border:none; width:280px; font-size: 18px; text-align: center; margin-bottom: 15px;">
+        <div id="account-name">@mergePlayerName</div>
         <div style="margin-bottom: 20px; display: flex; gap: 10px;">
             <button id="norm-btn" class="mode-btn active" onclick="setMode('normal')">NORMAL</button>
             <button id="hard-btn" class="mode-btn" onclick="setMode('hard')">HARD</button>
@@ -598,6 +607,7 @@
 <script>
     let grid = Array(16).fill(null), score = 0, currentUser = "", gameMode = "normal", lockedIndex = -1, lockElement = null;
     let coins = 0, selectedTheme = "original", stateSaveTimer = null;
+    const accountName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(mergePlayerName));
     
     const shopItems = {
         colour: [
@@ -741,19 +751,25 @@
 
     async function loadPlayerState() {
         try {
-            const response = await fetch(`/Merge/State?name=${encodeURIComponent(currentUser)}`);
+            const response = await fetch('/Merge/State');
+            if (!response.ok) {
+                window.location.href = '/Accounts/Login';
+                return false;
+            }
             const state = await response.json();
             coins = state.coins || 0;
             unlockedItems = JSON.parse(state.unlockedItems || '["stick","head-none","body-none"]');
             activeEquipment = JSON.parse(state.activeEquipment || '{"colour":"stick","head":"head-none","body":"body-none"}');
             changeTheme(state.theme || "original");
             coinText.innerText = coins;
+            return true;
         } catch {
             coins = 0;
             unlockedItems = ['stick', 'head-none', 'body-none'];
             activeEquipment = { colour: 'stick', head: 'head-none', body: 'body-none' };
             selectedTheme = "original";
             coinText.innerText = coins;
+            return true;
         }
     }
 
@@ -770,7 +786,6 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    playerName: currentUser,
                     coins,
                     unlockedItems: JSON.stringify(unlockedItems),
                     activeEquipment: JSON.stringify(activeEquipment),
@@ -782,9 +797,9 @@
     }
 
     async function startGame() {
-        currentUser = document.getElementById('username').value.trim() || "Guest";
+        currentUser = accountName || "Player";
         document.getElementById('display-name').innerText = currentUser;
-        await loadPlayerState();
+        if (!await loadPlayerState()) return;
         document.getElementById('login-screen').style.display = 'none';
         await updateLeaderboard();
         addRandomTile(); addRandomTile();
@@ -794,7 +809,6 @@
     function applyTileNumberColor(t) {
         const style = getTileNumberStyle(t.value);
         t.element.style.setProperty('--number-color', style.color);
-        t.element.style.setProperty('--number-bg', style.bg);
     }
 
     
@@ -917,18 +931,18 @@
     }
 
     async function endGame() {
-        await saveScore(currentUser, score);
+        await saveScore(score);
         document.getElementById('game-over').style.display = 'flex';
         await updateLeaderboard();
     }
 
  
-    async function saveScore(n, s) {
+    async function saveScore(s) {
         try {
             await fetch('/Merge/Score', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ playerName: n, score: s, mode: gameMode })
+                body: JSON.stringify({ score: s, mode: gameMode })
             });
         } catch {
         }
