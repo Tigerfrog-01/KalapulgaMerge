@@ -10,40 +10,6 @@ namespace KalapulgaMerge
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-<<<<<<< Updated upstream
-            builder.Services.AddDbContext<KalapulkDbContext>(options =>
-                options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("DefaultConnection"),
-                    x => x.MigrationsAssembly("KalapulgaMerge.Data") 
-                ));
-
-            builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<IShopService, ShopServices>();
-
-            builder.Services.AddScoped<IFilesServices, FilesServices>();
-
-            builder.Services.AddSession();
-
-            var app = builder.Build();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                try
-                {
-                    var db = scope.ServiceProvider.GetRequiredService<KalapulkDbContext>();
-                    db.Database.Migrate();
-                }
-                catch
-                {
-                }
-            }
-
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
-=======
             builder.Services.AddDbContext<KalapulkDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -76,7 +42,6 @@ namespace KalapulgaMerge
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
->>>>>>> Stashed changes
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

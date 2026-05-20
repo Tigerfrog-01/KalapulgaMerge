@@ -42,7 +42,3 @@ namespace KalapulgaMerge.Data
         }
     }
 }
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes

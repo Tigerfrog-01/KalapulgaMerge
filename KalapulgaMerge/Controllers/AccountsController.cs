@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 using KalapulgaMerge.Core.Domain;
-=======
-﻿using KalapulgaMerge.Core.Domain;
->>>>>>> Stashed changes
 using KalapulgaMerge.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -121,7 +117,6 @@ namespace KalapulgaMerge.Controllers
 
             SaveSession(user);
             return RedirectToAction("Index");
-<<<<<<< Updated upstream
         }
 
         public IActionResult SwitchAdmin()
@@ -159,190 +154,9 @@ namespace KalapulgaMerge.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EditUser(int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("Login");
-            }
-
-            UserAccount? user;
-
-            try
-            {
-                user = await _context.UserAccounts.FindAsync(id);
-            }
-            catch
-            {
-                return RedirectToAction("Users");
-            }
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditUser(int id, string name, string email, string password)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("Login");
-            }
-
-            UserAccount? user;
-
-            try
-            {
-                user = await _context.UserAccounts.FindAsync(id);
-            }
-            catch
-            {
-                ViewBag.Error = "Database is not available";
-                return View(new UserAccount { Id = id, Name = name ?? "", Email = email ?? "" });
-            }
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            name = name?.Trim() ?? "";
-            email = email?.Trim() ?? "";
-
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email))
-            {
-                ViewBag.Error = "Name and email are required";
-                return View(user);
-            }
-
-            bool emailTaken;
-
-            try
-            {
-                emailTaken = await _context.UserAccounts.AnyAsync(u => u.Email == email && u.Id != id);
-            }
-            catch
-            {
-                ViewBag.Error = "Database is not available";
-                return View(user);
-            }
-
-            if (emailTaken)
-            {
-                ViewBag.Error = "Email already exists";
-                return View(user);
-            }
-
-            user.Name = name;
-            user.Email = email;
-
-            if (!string.IsNullOrWhiteSpace(password))
-            {
-                user.Password = password;
-            }
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                ViewBag.Error = "Database is not available";
-                return View(user);
-            }
-
-            if (HttpContext.Session.GetString("UserId") == user.Id.ToString())
-            {
-                SaveSession(user);
-            }
-
-            return RedirectToAction("Users");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteUser(int id)
-=======
-        }
-
-        public IActionResult SwitchAdmin()
-        {
-            var isAdmin = IsAdmin();
-            HttpContext.Session.SetString("IsAdmin", isAdmin ? "false" : "true");
-            return RedirectToAction("Index", "Home");
-        }
-
-        public async Task<IActionResult> Users(string search)
->>>>>>> Stashed changes
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("Login");
-            }
-
-<<<<<<< Updated upstream
-            UserAccount? user;
-
-            try
-            {
-                user = await _context.UserAccounts.FindAsync(id);
-            }
-            catch
-            {
-                return RedirectToAction("Users");
-            }
-
-            if (user == null)
-            {
-                return RedirectToAction("Users");
-            }
-
-            _context.UserAccounts.Remove(user);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return RedirectToAction("Users");
-            }
-
-            if (HttpContext.Session.GetString("UserId") == user.Id.ToString())
-            {
-                HttpContext.Session.Clear();
-            }
-
-            return RedirectToAction("Users");
-        }
-
-=======
-            var query = _context.UserAccounts.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(u => u.Name.Contains(search));
-            }
-
-            ViewBag.Search = search;
-
-            try
-            {
-                var users = await query.OrderBy(u => u.Name).ToListAsync();
-                return View(users);
-            }
-            catch
-            {
-                ViewBag.Error = "Database is not available";
-                return View(new List<UserAccount>());
-            }
-        }
 
         
->>>>>>> Stashed changes
+
         [HttpPost]
         public async Task<IActionResult> UploadPicture(IFormFile photo)
         {
