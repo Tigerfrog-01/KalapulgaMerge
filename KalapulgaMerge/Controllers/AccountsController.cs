@@ -380,5 +380,48 @@ namespace KalapulgaMerge.Controllers
         {
             return HttpContext.Session.GetString("IsAdmin") == "true";
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login");
+            }
+
+            UserAccount? user;
+
+            try
+            {
+                user = await _context.UserAccounts.FindAsync(id);
+            }
+            catch
+            {
+                return RedirectToAction("Users");
+            }
+
+            if (user == null)
+            {
+                return RedirectToAction("Users");
+            }
+
+            _context.UserAccounts.Remove(user);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return RedirectToAction("Users");
+            }
+
+            if (HttpContext.Session.GetString("UserId") == user.Id.ToString())
+            {
+                HttpContext.Session.Clear();
+            }
+
+            return RedirectToAction("Users");
+        }
     }
 }
