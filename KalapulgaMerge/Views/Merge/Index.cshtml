@@ -323,7 +323,7 @@
             background: rgba(255, 250, 240, 0.18);
             border-radius: 8px;
             padding: 2px 8px;
-            text-shadow: 0 1px 0 rgba(255, 250, 240, 0.8), 0 2px 8px rgba(31, 37, 41, 0.46);
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.72), 0 0 8px rgba(0, 0, 0, 0.54), 0 0 14px var(--number-color, rgba(255, 255, 255, 0.9));
         }
 
         .tile-accessory,
@@ -632,17 +632,17 @@
     let unlockedItems = ['stick', 'head-none', 'body-none'];
     let activeEquipment = { colour: 'stick', head: 'head-none', body: 'body-none' };
     const tileNumberStyles = {
-        2: { color: '#164e63', bg: '#d9f99d' },
-        4: { color: '#7c2d12', bg: '#fde68a' },
-        8: { color: '#7f1d1d', bg: '#fdba74' },
-        16: { color: '#ffffff', bg: '#fb7185' },
-        32: { color: '#ffffff', bg: '#c084fc' },
-        64: { color: '#ffffff', bg: '#818cf8' },
-        128: { color: '#042f2e', bg: '#5eead4' },
-        256: { color: '#052e16', bg: '#86efac' },
-        512: { color: '#422006', bg: '#facc15' },
-        1024: { color: '#ffffff', bg: '#f97316' },
-        2048: { color: '#ffffff', bg: '#111827' }
+        2: { color: '#00e5ff' },
+        4: { color: '#7cff00' },
+        8: { color: '#ffe600' },
+        16: { color: '#ff9f1c' },
+        32: { color: '#ff4d6d' },
+        64: { color: '#ff2bd6' },
+        128: { color: '#a855f7' },
+        256: { color: '#38bdf8' },
+        512: { color: '#22c55e' },
+        1024: { color: '#facc15' },
+        2048: { color: '#fb7185' }
     };
 
     function getTileNumberStyle(value) {
@@ -650,8 +650,7 @@
         if (style) return style;
         const hue = Math.round((Math.log2(value) * 47) % 360);
         return {
-            color: hue > 35 && hue < 190 ? '#082f49' : '#ffffff',
-            bg: `hsl(${hue}, 78%, 46%)`
+            color: `hsl(${hue}, 100%, 68%)`
         };
     }
 

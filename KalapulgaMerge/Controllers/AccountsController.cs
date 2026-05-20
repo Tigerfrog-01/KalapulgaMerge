@@ -35,12 +35,22 @@ namespace KalapulgaMerge.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            if (IsLoggedIn())
+            {
+                return RedirectToAction("Index");
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(string name, string email, string password)
         {
+            if (IsLoggedIn())
+            {
+                return RedirectToAction("Index");
+            }
+
             name = string.IsNullOrWhiteSpace(name) ? email?.Split('@').FirstOrDefault() ?? "User" : name.Trim();
             email = email?.Trim() ?? "";
             password ??= "";
@@ -82,12 +92,22 @@ namespace KalapulgaMerge.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (IsLoggedIn())
+            {
+                return RedirectToAction("Index");
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
+            if (IsLoggedIn())
+            {
+                return RedirectToAction("Index");
+            }
+
             email = email?.Trim() ?? "";
             password ??= "";
 
@@ -379,6 +399,11 @@ namespace KalapulgaMerge.Controllers
         private bool IsAdmin()
         {
             return HttpContext.Session.GetString("IsAdmin") == "true";
+        }
+
+        private bool IsLoggedIn()
+        {
+            return !string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserId"));
         }
     }
 }
