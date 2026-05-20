@@ -770,26 +770,26 @@ textarea {
     }
 
 .game-home {
-    min-height: calc(100vh - 245px);
+    min-height: calc(100vh - 235px);
     display: grid;
     place-items: center;
 }
 
 .game-home-panel {
-    width: min(680px, 100%);
-    padding: clamp(22px, 5vw, 44px);
+    width: min(520px, 100%);
+    padding: clamp(18px, 4vw, 30px);
     border: 2px solid rgba(111, 58, 18, 0.18);
     border-radius: 8px;
     background: #fff8ed;
-    box-shadow: 0 14px 0 rgba(159, 63, 8, 0.12), 0 22px 44px rgba(87, 43, 10, 0.14);
+    box-shadow: 0 10px 0 rgba(159, 63, 8, 0.12), 0 18px 34px rgba(87, 43, 10, 0.12);
     display: grid;
     justify-items: center;
-    gap: 20px;
+    gap: 14px;
     text-align: center;
 }
 
 .game-logo-wrap {
-    width: clamp(132px, 26vw, 190px);
+    width: clamp(104px, 22vw, 140px);
     aspect-ratio: 1;
     border: 4px solid rgba(159, 63, 8, 0.22);
     border-radius: 8px;
@@ -807,32 +807,33 @@ textarea {
 
 .game-home-copy {
     display: grid;
-    gap: 8px;
+    gap: 5px;
 }
 
 .game-kicker {
     color: var(--merge-coral);
+    font-size: 0.78rem;
     font-weight: 950;
     text-transform: uppercase;
 }
 
 .game-home-copy h1 {
     margin: 0;
-    font-size: clamp(2.7rem, 9vw, 6rem);
-    line-height: 0.9;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height: 0.95;
 }
 
 .game-home-copy p {
     margin: 0;
     color: var(--merge-muted);
+    font-size: 0.92rem;
     font-weight: 800;
 }
 
 .game-home-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    width: min(260px, 100%);
+    display: grid;
+    gap: 10px;
 }
 
 .game-play-button,
@@ -851,9 +852,9 @@ textarea {
 }
 
 .game-play-button {
-    min-width: 180px;
-    padding: 16px 28px;
-    font-size: 1.3rem;
+    width: 100%;
+    padding: 13px 18px;
+    font-size: 1.05rem;
     color: #2a1708;
     background: var(--merge-gold);
 }
@@ -864,14 +865,15 @@ textarea {
 }
 
 .game-tool-button {
-    min-width: 122px;
-    padding: 14px 20px;
+    width: 100%;
+    padding: 12px 18px;
+    font-size: 0.95rem;
     background: var(--merge-coral);
 }
 
 .game-coin-card {
-    min-width: 190px;
-    padding: 12px 18px;
+    min-width: 160px;
+    padding: 10px 16px;
     border: 1px solid rgba(111, 58, 18, 0.16);
     border-radius: 8px;
     background: #fffdf8;
@@ -885,7 +887,7 @@ textarea {
 
 .game-coin-card strong {
     color: var(--merge-coral);
-    font-size: 1.8rem;
+    font-size: 1.35rem;
 }
 
 .home-modal {

@@ -606,7 +606,7 @@
 
 <script>
     let grid = Array(16).fill(null), score = 0, currentUser = "", gameMode = "normal", lockedIndex = -1, lockElement = null;
-    let coins = 0, selectedTheme = "original", stateSaveTimer = null;
+    let coins = 0, selectedTheme = "original", stateSaveTimer = null, stateDirty = false;
     const accountName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(mergePlayerName));
     
     const shopItems = {
@@ -774,15 +774,19 @@
 
     function queueStateSave() {
         if (!currentUser) return;
+        stateDirty = true;
         clearTimeout(stateSaveTimer);
-        stateSaveTimer = setTimeout(savePlayerState, 250);
+        stateSaveTimer = setTimeout(savePlayerState, 150);
     }
 
-    async function savePlayerState() {
+    async function savePlayerState(keepAlive = false) {
         if (!currentUser) return;
+        clearTimeout(stateSaveTimer);
+        stateSaveTimer = null;
         try {
-            await fetch('/Merge/State', {
+            const request = fetch('/Merge/State', {
                 method: 'POST',
+                keepalive: keepAlive,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     coins,
@@ -791,8 +795,14 @@
                     theme: selectedTheme
                 })
             });
+            if (!keepAlive) await request;
+            stateDirty = false;
         } catch {
         }
+    }
+
+    function saveBeforeLeaving() {
+        if (stateDirty) savePlayerState(true);
     }
 
     async function startGame() {
@@ -981,6 +991,12 @@
     window.addEventListener('keydown', (e) => {
         const keys = { "ArrowLeft": "left", "ArrowRight": "right", "ArrowUp": "up", "ArrowDown": "down" };
         if (keys[e.key]) { e.preventDefault(); handleMove(keys[e.key]); }
+    });
+
+    window.addEventListener('pagehide', saveBeforeLeaving);
+    window.addEventListener('beforeunload', saveBeforeLeaving);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveBeforeLeaving();
     });
 </script>
 </body>
