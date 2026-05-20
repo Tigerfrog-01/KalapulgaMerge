@@ -2,7 +2,7 @@
 
 namespace KalapulgaMerge.Models.Case
 {
-    public class CaseDeleteViewModel
+    public class CaseUpdateViewModel
     {
 
         public Guid CaseID { get; set; }
