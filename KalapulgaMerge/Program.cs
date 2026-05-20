@@ -16,6 +16,7 @@ namespace KalapulgaMerge
                     x => x.MigrationsAssembly("KalapulgaMerge.Data") 
                 ));
 
+            // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IShopService, ShopServices>();
 
@@ -23,23 +24,16 @@ namespace KalapulgaMerge
 
             builder.Services.AddSession();
 
+          
+
+
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                try
-                {
-                    var db = scope.ServiceProvider.GetRequiredService<KalapulkDbContext>();
-                    db.Database.Migrate();
-                }
-                catch
-                {
-                }
-            }
-
+            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
