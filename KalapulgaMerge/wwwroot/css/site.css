@@ -1,14 +1,14 @@
 :root {
-    --merge-ink: #1e2527;
-    --merge-muted: #66706c;
-    --merge-paper: #fffaf0;
-    --merge-cream: #f7ecd9;
-    --merge-teal: #0f8f8a;
-    --merge-teal-dark: #0b5d60;
-    --merge-coral: #ef6f4f;
-    --merge-gold: #f5b84b;
-    --merge-line: rgba(30, 37, 39, 0.14);
-    --merge-shadow: 0 18px 50px rgba(40, 53, 49, 0.18);
+    --merge-ink: #2a1708;
+    --merge-muted: #7a5232;
+    --merge-paper: #fff8ed;
+    --merge-cream: #f4cf9c;
+    --merge-teal: #f47c20;
+    --merge-teal-dark: #9f3f08;
+    --merge-coral: #f05f1a;
+    --merge-gold: #ffc45c;
+    --merge-line: rgba(111, 58, 18, 0.18);
+    --merge-shadow: 0 18px 42px rgba(87, 43, 10, 0.16);
 }
 
 html {
@@ -27,7 +27,7 @@ body {
     min-height: 100vh;
     margin: 0;
     color: var(--merge-ink);
-    background: linear-gradient(135deg, rgba(245, 184, 75, 0.2) 0 22%, transparent 22% 100%), linear-gradient(315deg, rgba(15, 143, 138, 0.16) 0 20%, transparent 20% 100%), repeating-linear-gradient(90deg, rgba(30, 37, 39, 0.035) 0 1px, transparent 1px 38px), var(--merge-cream);
+    background: #f4cf9c;
     font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -56,12 +56,11 @@ a {
 }
 
 .app-navbar {
-    min-height: 74px;
-    border: 1px solid rgba(255, 250, 240, 0.72);
+    min-height: 70px;
+    border: 2px solid rgba(111, 58, 18, 0.18);
     border-radius: 8px;
-    background: rgba(255, 250, 240, 0.92);
-    box-shadow: 0 10px 28px rgba(30, 37, 39, 0.12);
-    backdrop-filter: blur(16px);
+    background: #fff8ed;
+    box-shadow: 0 10px 0 rgba(159, 63, 8, 0.1);
 }
 
 .nav-shell {
@@ -85,20 +84,20 @@ a {
 
 .brand-mark {
     display: grid;
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
     place-items: center;
-    border: 2px solid rgba(30, 37, 39, 0.16);
+    border: 2px solid rgba(159, 63, 8, 0.2);
     border-radius: 8px;
     color: #fff;
-    background: #fffaf0;
-    box-shadow: inset 0 -4px 0 rgba(30, 37, 39, 0.16);
+    background: #ffffff;
+    box-shadow: inset 0 -4px 0 rgba(244, 124, 32, 0.18);
     overflow: hidden;
 }
 
 .brand-logo-img {
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
 }
 
@@ -113,7 +112,7 @@ a {
 }
 
 .brand-subtitle {
-    color: var(--merge-muted);
+    color: var(--merge-coral);
     font-size: 0.76rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -121,11 +120,10 @@ a {
 
 .app-nav-collapse {
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 14px;
 }
 
-.app-nav-main,
 .app-nav-actions {
     align-items: center;
     gap: 6px;
@@ -133,7 +131,7 @@ a {
 
 .app-navbar .nav-link {
     border-radius: 8px;
-    color: rgba(30, 37, 39, 0.76);
+    color: rgba(42, 23, 8, 0.78);
     font-weight: 800;
     padding: 0.58rem 0.78rem;
 }
@@ -141,19 +139,7 @@ a {
     .app-navbar .nav-link:hover,
     .app-navbar .nav-link:focus {
         color: var(--merge-ink);
-        background: rgba(15, 143, 138, 0.1);
-    }
-
-.app-navbar .nav-play {
-    color: #fff;
-    background: linear-gradient(135deg, var(--merge-teal), var(--merge-teal-dark));
-    box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.22);
-}
-
-    .app-navbar .nav-play:hover,
-    .app-navbar .nav-play:focus {
-        color: #fff;
-        background: linear-gradient(135deg, #14aaa4, var(--merge-teal-dark));
+        background: rgba(244, 124, 32, 0.12);
     }
 
 .app-navbar .tools-link {
@@ -162,23 +148,23 @@ a {
 }
 
 .auth-link {
-    border: 1px solid rgba(30, 37, 39, 0.12);
-    background: rgba(255, 255, 255, 0.54);
+    border: 1px solid rgba(111, 58, 18, 0.16);
+    background: #fffdf8;
 }
 
 .auth-register {
     color: var(--merge-ink);
-    background: linear-gradient(135deg, var(--merge-gold), #ffe08c);
-    border-color: rgba(30, 37, 39, 0.16);
-    box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.16);
+    background: #ffd37b;
+    border-color: rgba(111, 58, 18, 0.18);
+    box-shadow: inset 0 -3px 0 rgba(111, 58, 18, 0.12);
 }
 
 .auth-admin-on,
 .auth-users {
     color: #fff;
-    background: linear-gradient(135deg, var(--merge-coral), #b9452f);
-    border-color: rgba(30, 37, 39, 0.16);
-    box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.18);
+    background: var(--merge-coral);
+    border-color: rgba(111, 58, 18, 0.18);
+    box-shadow: inset 0 -3px 0 rgba(42, 23, 8, 0.18);
 }
 
 .auth-admin-on:hover,
@@ -210,7 +196,7 @@ a {
     display: grid;
     place-items: center;
     color: #fff;
-    background: linear-gradient(135deg, var(--merge-coral), var(--merge-teal));
+    background: var(--merge-coral);
     font-weight: 900;
 }
 
@@ -235,7 +221,7 @@ a {
 
         .app-dropdown .dropdown-item:hover,
         .app-dropdown .dropdown-item:focus {
-            background: rgba(15, 143, 138, 0.1);
+            background: rgba(244, 124, 32, 0.12);
             color: var(--merge-teal-dark);
         }
 
@@ -261,9 +247,9 @@ a {
     justify-content: space-between;
     gap: 12px;
     min-height: 54px;
-    border: 1px solid rgba(255, 250, 240, 0.68);
+    border: 1px solid rgba(111, 58, 18, 0.15);
     border-radius: 8px;
-    background: rgba(255, 250, 240, 0.72);
+    background: #fff8ed;
 }
 
 h1,
@@ -283,9 +269,9 @@ h4 {
     display: grid;
     gap: 22px;
     padding: clamp(22px, 4vw, 42px);
-    border: 1px solid rgba(255, 250, 240, 0.74);
+    border: 1px solid rgba(111, 58, 18, 0.16);
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(15, 143, 138, 0.11), transparent 48%), linear-gradient(315deg, rgba(239, 111, 79, 0.12), transparent 42%), rgba(255, 250, 240, 0.82);
+    background: var(--merge-paper);
     box-shadow: var(--merge-shadow);
 }
 
@@ -784,31 +770,31 @@ textarea {
     }
 
 .game-home {
-    min-height: calc(100vh - 280px);
+    min-height: calc(100vh - 245px);
     display: grid;
     place-items: center;
 }
 
 .game-home-panel {
-    width: min(760px, 100%);
-    padding: clamp(22px, 5vw, 42px);
-    border: 1px solid rgba(255, 250, 240, 0.78);
+    width: min(680px, 100%);
+    padding: clamp(22px, 5vw, 44px);
+    border: 2px solid rgba(111, 58, 18, 0.18);
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(255, 250, 240, 0.94), rgba(255, 250, 240, 0.78)), linear-gradient(315deg, rgba(245, 184, 75, 0.28), rgba(15, 143, 138, 0.12));
-    box-shadow: var(--merge-shadow);
+    background: #fff8ed;
+    box-shadow: 0 14px 0 rgba(159, 63, 8, 0.12), 0 22px 44px rgba(87, 43, 10, 0.14);
     display: grid;
     justify-items: center;
-    gap: 22px;
+    gap: 20px;
     text-align: center;
 }
 
 .game-logo-wrap {
-    width: clamp(140px, 28vw, 210px);
+    width: clamp(132px, 26vw, 190px);
     aspect-ratio: 1;
-    border: 6px solid rgba(30, 37, 39, 0.12);
+    border: 4px solid rgba(159, 63, 8, 0.22);
     border-radius: 8px;
-    background: #fffaf0;
-    box-shadow: inset 0 -10px 0 rgba(245, 184, 75, 0.22), 0 18px 40px rgba(30, 37, 39, 0.14);
+    background: #fffdf8;
+    box-shadow: inset 0 -8px 0 rgba(244, 124, 32, 0.14);
     display: grid;
     place-items: center;
 }
@@ -825,7 +811,7 @@ textarea {
 }
 
 .game-kicker {
-    color: var(--merge-teal-dark);
+    color: var(--merge-coral);
     font-weight: 950;
     text-transform: uppercase;
 }
@@ -838,7 +824,7 @@ textarea {
 
 .game-home-copy p {
     margin: 0;
-    color: rgba(30, 37, 39, 0.68);
+    color: var(--merge-muted);
     font-weight: 800;
 }
 
@@ -857,8 +843,8 @@ textarea {
     border: 0;
     border-radius: 8px;
     color: #fff;
-    background: linear-gradient(135deg, var(--merge-teal), var(--merge-teal-dark));
-    box-shadow: inset 0 -4px 0 rgba(30, 37, 39, 0.2), 0 12px 24px rgba(30, 37, 39, 0.12);
+    background: var(--merge-coral);
+    box-shadow: inset 0 -4px 0 rgba(42, 23, 8, 0.18);
     font-weight: 950;
     text-decoration: none;
     cursor: pointer;
@@ -868,7 +854,8 @@ textarea {
     min-width: 180px;
     padding: 16px 28px;
     font-size: 1.3rem;
-    background: linear-gradient(135deg, var(--merge-coral), var(--merge-gold));
+    color: #2a1708;
+    background: var(--merge-gold);
 }
 
 .game-play-button:hover,
@@ -879,19 +866,20 @@ textarea {
 .game-tool-button {
     min-width: 122px;
     padding: 14px 20px;
+    background: var(--merge-coral);
 }
 
 .game-coin-card {
     min-width: 190px;
     padding: 12px 18px;
-    border: 1px solid rgba(30, 37, 39, 0.12);
+    border: 1px solid rgba(111, 58, 18, 0.16);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.7);
+    background: #fffdf8;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    color: #6b4710;
+    color: var(--merge-muted);
     font-weight: 950;
 }
 
@@ -908,8 +896,7 @@ textarea {
     align-items: center;
     justify-content: center;
     padding: 18px;
-    background: rgba(30, 37, 39, 0.62);
-    backdrop-filter: blur(8px);
+    background: rgba(42, 23, 8, 0.55);
 }
 
 .home-modal-box {
@@ -917,10 +904,10 @@ textarea {
     max-height: 84vh;
     overflow-y: auto;
     padding: 22px;
-    border: 1px solid rgba(255, 250, 240, 0.72);
+    border: 2px solid rgba(111, 58, 18, 0.18);
     border-radius: 8px;
     background: var(--merge-paper);
-    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 18px 50px rgba(42, 23, 8, 0.22);
 }
 
 .home-modal-head {
@@ -937,7 +924,7 @@ textarea {
 
 .home-modal-head button {
     padding: 9px 14px;
-    background: linear-gradient(135deg, var(--merge-coral), #b9452f);
+    background: var(--merge-teal-dark);
 }
 
 .home-theme-list {
@@ -948,14 +935,14 @@ textarea {
 .home-theme-list button {
     padding: 14px 16px;
     color: var(--merge-ink);
-    background: linear-gradient(135deg, var(--merge-gold), #ffe08c);
+    background: var(--merge-gold);
 }
 
 .home-shop-title {
     margin: 16px 0 10px;
     padding-bottom: 8px;
-    border-bottom: 2px solid rgba(30, 37, 39, 0.12);
-    color: var(--merge-teal-dark);
+    border-bottom: 2px solid rgba(111, 58, 18, 0.14);
+    color: var(--merge-coral);
     font-size: 0.9rem;
     text-transform: uppercase;
 }
@@ -969,9 +956,9 @@ textarea {
 .home-shop-card {
     min-height: 176px;
     padding: 12px;
-    border: 1px solid rgba(30, 37, 39, 0.12);
+    border: 1px solid rgba(111, 58, 18, 0.14);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.7);
+    background: #fffdf8;
     display: grid;
     gap: 8px;
     justify-items: center;
@@ -980,7 +967,7 @@ textarea {
 .home-shop-preview {
     width: 74px;
     height: 74px;
-    border: 1px solid rgba(30, 37, 39, 0.12);
+    border: 1px solid rgba(111, 58, 18, 0.14);
     border-radius: 8px;
     background-color: #fff;
     background-size: contain;
@@ -988,7 +975,7 @@ textarea {
     background-position: center;
     display: grid;
     place-items: center;
-    color: rgba(30, 37, 39, 0.54);
+    color: var(--merge-muted);
     font-weight: 900;
 }
 
@@ -1015,7 +1002,6 @@ textarea {
         padding: 14px 0 4px;
     }
 
-    .app-nav-main,
     .app-nav-actions {
         align-items: stretch;
     }
