@@ -91,6 +91,30 @@ namespace KalapulgaMerge.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var dto = await _caseService.GetCaseByIdAsync(id);
+            if (dto == null) return NotFound();
+
+            var vm = new CaseDeleteViewModel
+            {
+                CaseID = dto.CaseID,
+                UserID = dto.UserID,
+                Description = dto.Description,
+                CurrentCaseStatus = dto.CurrentCaseStatus
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid caseID)
+        {
+            await _caseService.DeleteAsync(caseID);
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

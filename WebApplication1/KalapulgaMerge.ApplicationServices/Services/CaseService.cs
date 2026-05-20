@@ -67,6 +67,16 @@ public class CaseService : ICaseService
         await _context.SaveChangesAsync();
         return domain;
     }
+    public async Task<CaseItem> DeleteAsync(Guid id)
+    {
+        var domain = await _context.Cases.FindAsync(id);
+        if (domain != null)
+        {
+            _context.Cases.Remove(domain);
+            await _context.SaveChangesAsync();
+        }
+        return domain;
+    }
 
 
 }
