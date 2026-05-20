@@ -20,6 +20,7 @@ namespace KalapulgaMerge
             builder.Services.AddScoped<IShopService, ShopServices>();
 
             builder.Services.AddScoped<IFilesServices, FilesServices>();
+            builder.Services.AddScoped<ICaseService, CaseService>();
 
             builder.Services.AddSession();
 

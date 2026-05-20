@@ -14,6 +14,7 @@ namespace KalapulgaMerge.Data
         public DbSet<FileToApi> FilesToApi { get; set; }
 
         public DbSet<ShopItem> ShopItems { get; set; }
+        public DbSet<CaseItem> Cases { get; set; }
 
         public DbSet<UserAccount> UserAccounts { get; set; }
 
