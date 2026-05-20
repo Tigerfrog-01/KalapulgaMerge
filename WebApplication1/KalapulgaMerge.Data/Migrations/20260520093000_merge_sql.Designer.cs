@@ -3,6 +3,7 @@ using KalapulgaMerge.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KalapulgaMerge.Data.Migrations
 {
     [DbContext(typeof(KalapulkDbContext))]
-    partial class KalapulkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520093000_merge_sql")]
+    partial class merge_sql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

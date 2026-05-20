@@ -316,6 +316,10 @@
         .tile span {
             position: relative;
             z-index: 14;
+            color: var(--number-color, var(--tile-text));
+            background: var(--number-bg, rgba(255, 250, 240, 0.7));
+            border-radius: 8px;
+            padding: 2px 8px;
         }
 
         .tile-accessory,
@@ -593,7 +597,7 @@
 
 <script>
     let grid = Array(16).fill(null), score = 0, currentUser = "", gameMode = "normal", lockedIndex = -1, lockElement = null;
-    let coins = parseInt(localStorage.getItem('kalapulkCoins')) || 0;
+    let coins = 0, selectedTheme = "original", stateSaveTimer = null;
     
     const shopItems = {
         colour: [
@@ -615,8 +619,31 @@
         ]
     };
 
-    let unlockedItems = JSON.parse(localStorage.getItem('kalapulkUnlockedItems')) || ['stick', 'head-none', 'body-none'];
-    let activeEquipment = JSON.parse(localStorage.getItem('kalapulkEquipped')) || { colour: 'stick', head: 'head-none', body: 'body-none' };
+    let unlockedItems = ['stick', 'head-none', 'body-none'];
+    let activeEquipment = { colour: 'stick', head: 'head-none', body: 'body-none' };
+    const tileNumberStyles = {
+        2: { color: '#164e63', bg: '#d9f99d' },
+        4: { color: '#7c2d12', bg: '#fde68a' },
+        8: { color: '#7f1d1d', bg: '#fdba74' },
+        16: { color: '#ffffff', bg: '#fb7185' },
+        32: { color: '#ffffff', bg: '#c084fc' },
+        64: { color: '#ffffff', bg: '#818cf8' },
+        128: { color: '#042f2e', bg: '#5eead4' },
+        256: { color: '#052e16', bg: '#86efac' },
+        512: { color: '#422006', bg: '#facc15' },
+        1024: { color: '#ffffff', bg: '#f97316' },
+        2048: { color: '#ffffff', bg: '#111827' }
+    };
+
+    function getTileNumberStyle(value) {
+        const style = tileNumberStyles[value];
+        if (style) return style;
+        const hue = Math.round((Math.log2(value) * 47) % 360);
+        return {
+            color: hue > 35 && hue < 190 ? '#082f49' : '#ffffff',
+            bg: `hsl(${hue}, 78%, 46%)`
+        };
+    }
 
     const board = document.getElementById('game-board'), scoreText = document.getElementById('current-score'), coinText = document.getElementById('coin-count');
 
@@ -629,7 +656,7 @@
     function updateCurrency(amount) {
         coins += amount;
         coinText.innerText = coins;
-        localStorage.setItem('kalapulkCoins', coins);
+        queueStateSave();
     }
     updateCurrency(0);
 
@@ -670,14 +697,14 @@
         if (coins >= price) {
             updateCurrency(-price);
             unlockedItems.push(id);
-            localStorage.setItem('kalapulkUnlockedItems', JSON.stringify(unlockedItems));
+            queueStateSave();
             updateShopUI();
         } else { alert("Not enough coins!"); }
     }
 
     function equipItem(category, id) {
         activeEquipment[category] = id;
-        localStorage.setItem('kalapulkEquipped', JSON.stringify(activeEquipment));
+        queueStateSave();
         updateShopUI();
         refreshAllTiles();
     }
@@ -701,10 +728,9 @@
     function changeTheme(theme) {
         document.body.className = ''; 
         if (theme !== 'original') document.body.classList.add('theme-' + theme);
-        localStorage.setItem('kalapulkTheme', theme);
+        selectedTheme = theme;
+        queueStateSave();
     }
-
-    if (localStorage.getItem('kalapulkTheme')) changeTheme(localStorage.getItem('kalapulkTheme'));
 
     function setMode(m) { 
         gameMode = m; 
@@ -713,13 +739,62 @@
         document.getElementById('display-mode').innerText = m.toUpperCase();
     }
 
-    function startGame() {
+    async function loadPlayerState() {
+        try {
+            const response = await fetch(`/Merge/State?name=${encodeURIComponent(currentUser)}`);
+            const state = await response.json();
+            coins = state.coins || 0;
+            unlockedItems = JSON.parse(state.unlockedItems || '["stick","head-none","body-none"]');
+            activeEquipment = JSON.parse(state.activeEquipment || '{"colour":"stick","head":"head-none","body":"body-none"}');
+            changeTheme(state.theme || "original");
+            coinText.innerText = coins;
+        } catch {
+            coins = 0;
+            unlockedItems = ['stick', 'head-none', 'body-none'];
+            activeEquipment = { colour: 'stick', head: 'head-none', body: 'body-none' };
+            selectedTheme = "original";
+            coinText.innerText = coins;
+        }
+    }
+
+    function queueStateSave() {
+        if (!currentUser) return;
+        clearTimeout(stateSaveTimer);
+        stateSaveTimer = setTimeout(savePlayerState, 250);
+    }
+
+    async function savePlayerState() {
+        if (!currentUser) return;
+        try {
+            await fetch('/Merge/State', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    playerName: currentUser,
+                    coins,
+                    unlockedItems: JSON.stringify(unlockedItems),
+                    activeEquipment: JSON.stringify(activeEquipment),
+                    theme: selectedTheme
+                })
+            });
+        } catch {
+        }
+    }
+
+    async function startGame() {
         currentUser = document.getElementById('username').value.trim() || "Guest";
         document.getElementById('display-name').innerText = currentUser;
+        await loadPlayerState();
         document.getElementById('login-screen').style.display = 'none';
-        updateLeaderboard();
+        await updateLeaderboard();
         addRandomTile(); addRandomTile();
         if (gameMode === 'hard') updateLock();
+    }
+
+    function applyTileNumberColor(t) {
+        const style = getTileNumberStyle(t.value);
+        t.element.style.setProperty('--number-color', style.color);
+        t.element.style.setProperty('--number-bg', style.bg);
     }
 
     
@@ -749,6 +824,7 @@
         t.element.style.backgroundImage = `url('${colourItem.img}')`;
         acc.style.backgroundImage = (headItem && headItem.img) ? `url('${headItem.img}')` : 'none';
         bdy.style.backgroundImage = (bodyItem && bodyItem.img) ? `url('${bodyItem.img}')` : 'none';
+        applyTileNumberColor(t);
 
         return t;
     }
@@ -773,6 +849,7 @@
                 tile.element.remove();
                 
                 newRow[targetIdx-1].element.querySelector('span').innerText = newRow[targetIdx-1].value;
+                applyTileNumberColor(newRow[targetIdx-1]);
                 
                 changed = true;
             } else {
@@ -839,37 +916,32 @@
         return true;
     }
 
-    function endGame() {
-        saveScore(currentUser, score);
+    async function endGame() {
+        await saveScore(currentUser, score);
         document.getElementById('game-over').style.display = 'flex';
-        updateLeaderboard();
+        await updateLeaderboard();
     }
 
  
-    function saveScore(n, s) {
-        let h = JSON.parse(localStorage.getItem('kalapulkScores') || '[]');
-        
-       
-        let existingUserIdx = h.findIndex(entry => entry.name.toLowerCase() === n.toLowerCase());
-
-        if (existingUserIdx !== -1) {
-          
-            if (s > h[existingUserIdx].score) {
-                h[existingUserIdx].score = s;
-                h[existingUserIdx].name = n; 
-            }
-        } else {
-       
-            h.push({ name: n, score: s });
+    async function saveScore(n, s) {
+        try {
+            await fetch('/Merge/Score', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ playerName: n, score: s, mode: gameMode })
+            });
+        } catch {
         }
-
-      
-        h.sort((a, b) => b.score - a.score);
-        localStorage.setItem('kalapulkScores', JSON.stringify(h.slice(0, 10)));
     }
 
-    function updateLeaderboard() {
-        let h = JSON.parse(localStorage.getItem('kalapulkScores') || '[]');
+    async function updateLeaderboard() {
+        let h = [];
+        try {
+            const response = await fetch('/Merge/Leaderboard');
+            h = await response.json();
+        } catch {
+            h = [];
+        }
         document.getElementById('leaderboard-list').innerHTML = h.map(s => `
             <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.1);">
                 <span>${s.name}</span>
