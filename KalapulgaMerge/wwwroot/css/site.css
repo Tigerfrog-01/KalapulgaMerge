@@ -27,7 +27,7 @@ body {
     min-height: 100vh;
     margin: 0;
     color: var(--merge-ink);
-    background: linear-gradient(135deg, rgba(15, 143, 138, 0.12) 0 24%, transparent 24% 100%), linear-gradient(315deg, rgba(239, 111, 79, 0.14) 0 18%, transparent 18% 100%), repeating-linear-gradient(90deg, rgba(30, 37, 39, 0.035) 0 1px, transparent 1px 36px), var(--merge-cream);
+    background: linear-gradient(135deg, rgba(245, 184, 75, 0.2) 0 22%, transparent 22% 100%), linear-gradient(315deg, rgba(15, 143, 138, 0.16) 0 20%, transparent 20% 100%), repeating-linear-gradient(90deg, rgba(30, 37, 39, 0.035) 0 1px, transparent 1px 38px), var(--merge-cream);
     font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -85,14 +85,21 @@ a {
 
 .brand-mark {
     display: grid;
-    width: 42px;
-    height: 42px;
+    width: 50px;
+    height: 50px;
     place-items: center;
     border: 2px solid rgba(30, 37, 39, 0.16);
     border-radius: 8px;
     color: #fff;
-    background: linear-gradient(145deg, var(--merge-coral), var(--merge-gold) 54%, var(--merge-teal));
+    background: #fffaf0;
     box-shadow: inset 0 -4px 0 rgba(30, 37, 39, 0.16);
+    overflow: hidden;
+}
+
+.brand-logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
 }
 
 .brand-copy {
@@ -168,33 +175,44 @@ a {
 
 .auth-admin-on,
 .auth-users {
-<<<<<<< Updated upstream
-  color: #fff;
-  background: linear-gradient(135deg, var(--merge-coral), #b9452f);
-  border-color: rgba(30, 37, 39, 0.16);
-  box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.18);
-}
-
-.auth-admin-on:hover,
-.auth-users:hover,
-.auth-admin-on:focus,
-.auth-users:focus {
-  color: #fff;
-}
-=======
     color: #fff;
     background: linear-gradient(135deg, var(--merge-coral), #b9452f);
     border-color: rgba(30, 37, 39, 0.16);
     box-shadow: inset 0 -3px 0 rgba(30, 37, 39, 0.18);
 }
 
-    .auth-admin-on:hover,
-    .auth-users:hover,
-    .auth-admin-on:focus,
-    .auth-users:focus {
-        color: #fff;
-    }
->>>>>>> Stashed changes
+.auth-admin-on:hover,
+.auth-users:hover,
+.auth-admin-on:focus,
+.auth-users:focus {
+    color: #fff;
+}
+
+.nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-profile-img,
+.nav-profile-fallback {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(30, 37, 39, 0.14);
+}
+
+.nav-profile-img {
+    object-fit: cover;
+}
+
+.nav-profile-fallback {
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: linear-gradient(135deg, var(--merge-coral), var(--merge-teal));
+    font-weight: 900;
+}
 
 .app-toggler {
     border-color: rgba(30, 37, 39, 0.2);
@@ -765,6 +783,225 @@ textarea {
         box-shadow: 0 0 0 4px rgba(15, 143, 138, 0.12);
     }
 
+.game-home {
+    min-height: calc(100vh - 280px);
+    display: grid;
+    place-items: center;
+}
+
+.game-home-panel {
+    width: min(760px, 100%);
+    padding: clamp(22px, 5vw, 42px);
+    border: 1px solid rgba(255, 250, 240, 0.78);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(255, 250, 240, 0.94), rgba(255, 250, 240, 0.78)), linear-gradient(315deg, rgba(245, 184, 75, 0.28), rgba(15, 143, 138, 0.12));
+    box-shadow: var(--merge-shadow);
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    text-align: center;
+}
+
+.game-logo-wrap {
+    width: clamp(140px, 28vw, 210px);
+    aspect-ratio: 1;
+    border: 6px solid rgba(30, 37, 39, 0.12);
+    border-radius: 8px;
+    background: #fffaf0;
+    box-shadow: inset 0 -10px 0 rgba(245, 184, 75, 0.22), 0 18px 40px rgba(30, 37, 39, 0.14);
+    display: grid;
+    place-items: center;
+}
+
+.game-logo {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+}
+
+.game-home-copy {
+    display: grid;
+    gap: 8px;
+}
+
+.game-kicker {
+    color: var(--merge-teal-dark);
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.game-home-copy h1 {
+    margin: 0;
+    font-size: clamp(2.7rem, 9vw, 6rem);
+    line-height: 0.9;
+}
+
+.game-home-copy p {
+    margin: 0;
+    color: rgba(30, 37, 39, 0.68);
+    font-weight: 800;
+}
+
+.game-home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.game-play-button,
+.game-tool-button,
+.home-modal-head button,
+.home-theme-list button,
+.home-shop-card button {
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--merge-teal), var(--merge-teal-dark));
+    box-shadow: inset 0 -4px 0 rgba(30, 37, 39, 0.2), 0 12px 24px rgba(30, 37, 39, 0.12);
+    font-weight: 950;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.game-play-button {
+    min-width: 180px;
+    padding: 16px 28px;
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--merge-coral), var(--merge-gold));
+}
+
+.game-play-button:hover,
+.game-play-button:focus {
+    color: #fff;
+}
+
+.game-tool-button {
+    min-width: 122px;
+    padding: 14px 20px;
+}
+
+.game-coin-card {
+    min-width: 190px;
+    padding: 12px 18px;
+    border: 1px solid rgba(30, 37, 39, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #6b4710;
+    font-weight: 950;
+}
+
+.game-coin-card strong {
+    color: var(--merge-coral);
+    font-size: 1.8rem;
+}
+
+.home-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1600;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(30, 37, 39, 0.62);
+    backdrop-filter: blur(8px);
+}
+
+.home-modal-box {
+    width: min(620px, 100%);
+    max-height: 84vh;
+    overflow-y: auto;
+    padding: 22px;
+    border: 1px solid rgba(255, 250, 240, 0.72);
+    border-radius: 8px;
+    background: var(--merge-paper);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+}
+
+.home-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.home-modal-head h2 {
+    margin: 0;
+}
+
+.home-modal-head button {
+    padding: 9px 14px;
+    background: linear-gradient(135deg, var(--merge-coral), #b9452f);
+}
+
+.home-theme-list {
+    display: grid;
+    gap: 10px;
+}
+
+.home-theme-list button {
+    padding: 14px 16px;
+    color: var(--merge-ink);
+    background: linear-gradient(135deg, var(--merge-gold), #ffe08c);
+}
+
+.home-shop-title {
+    margin: 16px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(30, 37, 39, 0.12);
+    color: var(--merge-teal-dark);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.home-shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.home-shop-card {
+    min-height: 176px;
+    padding: 12px;
+    border: 1px solid rgba(30, 37, 39, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+}
+
+.home-shop-preview {
+    width: 74px;
+    height: 74px;
+    border: 1px solid rgba(30, 37, 39, 0.12);
+    border-radius: 8px;
+    background-color: #fff;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: grid;
+    place-items: center;
+    color: rgba(30, 37, 39, 0.54);
+    font-weight: 900;
+}
+
+.home-shop-card button {
+    width: 100%;
+    padding: 9px 10px;
+}
+
+.home-shop-card button:disabled {
+    opacity: 0.72;
+    cursor: default;
+}
+
 @media (max-width: 991.98px) {
     .site-header {
         padding-top: 8px;
@@ -799,19 +1036,6 @@ textarea {
         flex-direction: column;
     }
 
-<<<<<<< Updated upstream
-  .shop-sort {
-    width: 100%;
-  }
-
-  .admin-users-header,
-  .admin-search-form,
-  .admin-table-actions,
-  .admin-edit-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-=======
     .shop-sort {
         width: 100%;
     }
@@ -823,7 +1047,6 @@ textarea {
         align-items: stretch;
         flex-direction: column;
     }
->>>>>>> Stashed changes
 }
 
 @media (max-width: 575.98px) {

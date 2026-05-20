@@ -1,29 +1,184 @@
 @{
     ViewData["Title"] = "Avaleht";
+    var coins = ViewBag.Coins ?? 0;
+    var isLoggedIn = ViewBag.IsLoggedIn == true;
+    var playerName = ViewBag.PlayerName as string ?? "Guest";
 }
 
-<section class="home-hub">
-    <div class="home-title-block">
-        <span class="home-eyebrow">Arcade hub</span>
-        <h1>Kalapulga Merge</h1>
-    </div>
+<section class="game-home">
+    <div class="game-home-panel">
+        <div class="game-logo-wrap">
+            <img src="~/kalalogo.png" alt="Kalapulga Merge" class="game-logo" />
+        </div>
 
-    <div class="home-action-grid">
-        <a asp-action="Index" asp-controller="Merge" class="home-action home-action-primary">
-            <span class="home-action-mark">🎮</span>
-            <span>Play Merge</span>
-        </a>
-        <a asp-action="Index" asp-controller="Shop" class="home-action">
-            <span class="home-action-mark">🛒</span>
-            <span>Pood</span>
-        </a>
-        <a asp-action="Leaderboard" asp-controller="Leaderboard" class="home-action">
-            <span class="home-action-mark">🏆</span>
-            <span>Leaderboard</span>
-        </a>
-        <a asp-action="Index" asp-controller="Game" class="home-action">
-            <span class="home-action-mark">🪲</span>
-            <span>Game</span>
-        </a>
+        <div class="game-home-copy">
+            <span class="game-kicker">Fish finger merge arcade</span>
+            <h1>Kalapulga Merge</h1>
+            <p>@(isLoggedIn ? $"Ready, {playerName}" : "Login to save coins, shop items and settings")</p>
+        </div>
+
+        <div class="game-home-actions">
+            <a asp-controller="Merge" asp-action="Index" class="game-play-button">Play</a>
+            <button type="button" class="game-tool-button" onclick="openHomeModal('home-shop-modal')">Shop</button>
+            <button type="button" class="game-tool-button" onclick="openHomeModal('home-settings-modal')">Settings</button>
+        </div>
+
+        <div class="game-coin-card">
+            <span>Coins</span>
+            <strong id="home-coin-count">@coins</strong>
+        </div>
     </div>
 </section>
+
+<div id="home-shop-modal" class="home-modal">
+    <div class="home-modal-box">
+        <div class="home-modal-head">
+            <h2>Shop</h2>
+            <button type="button" onclick="closeHomeModal('home-shop-modal')">Close</button>
+        </div>
+        <div id="home-shop-items"></div>
+    </div>
+</div>
+
+<div id="home-settings-modal" class="home-modal">
+    <div class="home-modal-box">
+        <div class="home-modal-head">
+            <h2>Settings</h2>
+            <button type="button" onclick="closeHomeModal('home-settings-modal')">Close</button>
+        </div>
+        <div class="home-theme-list">
+            <button type="button" onclick="changeHomeTheme('original')">Breaded sticks</button>
+            <button type="button" onclick="changeHomeTheme('ocean')">Deep ocean</button>
+            <button type="button" onclick="changeHomeTheme('neon')">Neon matrix</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const homeLoggedIn = @Json.Serialize(isLoggedIn);
+    let homeCoins = Number(@Json.Serialize(coins));
+    let homeTheme = "original";
+    let homeUnlockedItems = ['stick', 'head-none', 'body-none'];
+    let homeActiveEquipment = { colour: 'stick', head: 'head-none', body: 'body-none' };
+    const homeCoinText = document.getElementById('home-coin-count');
+    const homeShopItems = {
+        colour: [
+            { id: 'stick', name: 'Fish Stick', price: 0, img: 'https://png.pngtree.com/png-vector/20240103/ourmid/pngtree-fish-stick-on-a-white-background-breaded-png-image_10938833.png' },
+            { id: 'ice', name: 'Ice Stick', price: 25, img: 'ice-stick.png' },
+            { id: 'spicy', name: 'Spicy Stick', price: 50, img: 'hot-stick.png' },
+            { id: 'gold', name: 'Golden Stick', price: 1000, img: 'gold-stick.png' }
+        ],
+        head: [
+            { id: 'head-none', name: 'None', price: 0, img: '' },
+            { id: 'cat', name: 'Cat-Ears', price: 25, img: 'cat-pulk.png' },
+            { id: 'tophat', name: 'tophat', price: 50, img: 'top-pulk.png' }
+        ],
+        body: [
+            { id: 'body-none', name: 'None', price: 0, img: '' },
+            { id: 'bow', name: 'bowtie', price: 10, img: 'bow-stick.png' },
+            { id: 'donut', name: 'donut', price: 10, img: 'donut-pulk.png' }
+        ]
+    };
+
+    function openHomeModal(id) {
+        if (!homeLoggedIn) {
+            window.location.href = '/Accounts/Login';
+            return;
+        }
+
+        document.getElementById(id).style.display = 'flex';
+        if (id === 'home-shop-modal') updateHomeShop();
+    }
+
+    function closeHomeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    async function loadHomeState() {
+        if (!homeLoggedIn) return;
+
+        try {
+            const response = await fetch('/Merge/State');
+            if (!response.ok) return;
+            const state = await response.json();
+            homeCoins = state.coins || 0;
+            homeTheme = state.theme || "original";
+            homeUnlockedItems = JSON.parse(state.unlockedItems || '["stick","head-none","body-none"]');
+            homeActiveEquipment = JSON.parse(state.activeEquipment || '{"colour":"stick","head":"head-none","body":"body-none"}');
+            homeCoinText.innerText = homeCoins;
+        } catch {
+        }
+    }
+
+    async function saveHomeState() {
+        if (!homeLoggedIn) return;
+
+        try {
+            await fetch('/Merge/State', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    coins: homeCoins,
+                    unlockedItems: JSON.stringify(homeUnlockedItems),
+                    activeEquipment: JSON.stringify(homeActiveEquipment),
+                    theme: homeTheme
+                })
+            });
+        } catch {
+        }
+    }
+
+    function updateHomeShop() {
+        const container = document.getElementById('home-shop-items');
+        container.innerHTML = '';
+
+        for (let category in homeShopItems) {
+            const title = document.createElement('h3');
+            title.className = 'home-shop-title';
+            title.innerText = category.toUpperCase();
+            container.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = 'home-shop-grid';
+
+            homeShopItems[category].forEach(item => {
+                const unlocked = homeUnlockedItems.includes(item.id);
+                const equipped = homeActiveEquipment[category] === item.id;
+                const card = document.createElement('div');
+                card.className = 'home-shop-card';
+                card.innerHTML = `
+                    <div class="home-shop-preview" style="background-image:url('${item.img}')">${item.id.includes('none') ? 'None' : ''}</div>
+                    <strong>${item.name}</strong>
+                    <button type="button" ${equipped ? 'disabled' : ''}>${equipped ? 'Equipped' : unlocked ? 'Select' : 'Coins ' + item.price}</button>
+                `;
+                card.querySelector('button').onclick = () => unlocked ? equipHomeItem(category, item.id) : buyHomeItem(category, item.id, item.price);
+                grid.appendChild(card);
+            });
+
+            container.appendChild(grid);
+        }
+    }
+
+    async function buyHomeItem(category, id, price) {
+        if (homeCoins < price) return;
+        homeCoins -= price;
+        homeUnlockedItems.push(id);
+        homeCoinText.innerText = homeCoins;
+        await saveHomeState();
+        updateHomeShop();
+    }
+
+    async function equipHomeItem(category, id) {
+        homeActiveEquipment[category] = id;
+        await saveHomeState();
+        updateHomeShop();
+    }
+
+    async function changeHomeTheme(theme) {
+        homeTheme = theme;
+        await saveHomeState();
+        closeHomeModal('home-settings-modal');
+    }
+
+    loadHomeState();
+</script>
