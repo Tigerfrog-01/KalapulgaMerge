@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 namespace KalapulgaMerge.Core.Domain;
+=======
+﻿namespace KalapulgaMerge.Core.Domain;
+>>>>>>> Stashed changes
 
 public class UserAccount
 {
@@ -8,4 +12,8 @@ public class UserAccount
     public string Password { get; set; } = string.Empty;
     public string? ProfilePicPath { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

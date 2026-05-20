@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 using KalapulgaMerge.Core.Domain;
+=======
+﻿using KalapulgaMerge.Core.Domain;
+>>>>>>> Stashed changes
 using KalapulgaMerge.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -117,6 +121,7 @@ namespace KalapulgaMerge.Controllers
 
             SaveSession(user);
             return RedirectToAction("Index");
+<<<<<<< Updated upstream
         }
 
         public IActionResult SwitchAdmin()
@@ -261,12 +266,25 @@ namespace KalapulgaMerge.Controllers
 
         [HttpPost]
         public async Task<IActionResult> DeleteUser(int id)
+=======
+        }
+
+        public IActionResult SwitchAdmin()
+        {
+            var isAdmin = IsAdmin();
+            HttpContext.Session.SetString("IsAdmin", isAdmin ? "false" : "true");
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> Users(string search)
+>>>>>>> Stashed changes
         {
             if (!IsAdmin())
             {
                 return RedirectToAction("Login");
             }
 
+<<<<<<< Updated upstream
             UserAccount? user;
 
             try
@@ -301,6 +319,30 @@ namespace KalapulgaMerge.Controllers
             return RedirectToAction("Users");
         }
 
+=======
+            var query = _context.UserAccounts.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(u => u.Name.Contains(search));
+            }
+
+            ViewBag.Search = search;
+
+            try
+            {
+                var users = await query.OrderBy(u => u.Name).ToListAsync();
+                return View(users);
+            }
+            catch
+            {
+                ViewBag.Error = "Database is not available";
+                return View(new List<UserAccount>());
+            }
+        }
+
+        
+>>>>>>> Stashed changes
         [HttpPost]
         public async Task<IActionResult> UploadPicture(IFormFile photo)
         {

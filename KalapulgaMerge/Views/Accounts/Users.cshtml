@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 @model IEnumerable<KalapulgaMerge.Core.Domain.UserAccount>
+=======
+﻿@model IEnumerable<KalapulgaMerge.Core.Domain.UserAccount>
+>>>>>>> Stashed changes
 @{
     ViewData["Title"] = "Users";
 }
@@ -37,6 +41,7 @@
                         <td>@user.Name</td>
                         <td>@user.Email</td>
                         <td>@user.CreatedAt.ToString("yyyy-MM-dd")</td>
+<<<<<<< Updated upstream
                         <td>
                             <div class="admin-table-actions">
                                 <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">Update</a>
@@ -44,10 +49,17 @@
                                     <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
                                 </form>
                             </div>
+=======
+                        <td>                     
+>>>>>>> Stashed changes
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+<<<<<<< Updated upstream
 </section>
+=======
+</section>
+>>>>>>> Stashed changes
