@@ -1,0 +1,35 @@
+﻿@model KalapulgaMerge.Models.Case.CaseDeleteViewModel
+
+<div class="container py-4" style="max-width: 600px; font-family: sans-serif;">
+    <div class="card border-danger shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Kustutamise kinnitamine</h4>
+        </div>
+        <div class="card-body">
+            <h5>Kas oled kindel, et soovid selle juhtumi kustutada?</h5>
+            <hr />
+            
+            <dl class="row">
+                <dt class="col-sm-4">Juhtumi ID:</dt>
+                <dd class="col-sm-8">@Model.CaseID</dd>
+
+                <dt class="col-sm-4">Kasutaja ID:</dt>
+                <dd class="col-sm-8">@Model.UserID</dd>
+
+                <dt class="col-sm-4">Kirjeldus:</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+
+                <dt class="col-sm-4">Staatus:</dt>
+                <dd class="col-sm-8">@Model.CurrentCaseStatus</dd>
+            </dl>
+
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" asp-for="CaseID" />
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-danger">MRfrend on parim</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Tühista</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

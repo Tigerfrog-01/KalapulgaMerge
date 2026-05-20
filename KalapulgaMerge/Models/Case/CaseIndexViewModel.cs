@@ -2,7 +2,7 @@
 
 namespace KalapulgaMerge.Models.Case
 {
-    public class CaseIndexViewModel
+    public class CaseIndexViewModel //MRfrend on top
     {
         public Guid CaseID { get; set; }
         public int UserID { get; set; }
