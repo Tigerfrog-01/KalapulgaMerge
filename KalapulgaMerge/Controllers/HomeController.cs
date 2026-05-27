@@ -28,13 +28,22 @@ namespace KalapulgaMerge.Controllers
 
             if (int.TryParse(userIdText, out var userId))
             {
+                var saveKey = userId.ToString();
+                var playerName = HttpContext.Session.GetString("UserName") ?? "Player";
+
                 ViewBag.IsLoggedIn = true;
-                ViewBag.PlayerName = HttpContext.Session.GetString("UserName") ?? "Player";
+                ViewBag.PlayerName = playerName;
                 ViewBag.ProfilePic = HttpContext.Session.GetString("UserProfilePic");
 
                 try
                 {
-                    var state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.UserAccountId == userId);
+                    var state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.PlayerName == saveKey);
+
+                    if (state == null && playerName != saveKey)
+                    {
+                        state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.PlayerName == playerName);
+                    }
+
                     ViewBag.Coins = state?.Coins ?? 0;
                 }
                 catch

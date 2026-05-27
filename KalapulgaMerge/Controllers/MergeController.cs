@@ -30,16 +30,17 @@ namespace KalapulgaMerge.Controllers
         [HttpGet]
         public async Task<IActionResult> State()
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!TryGetCurrentUserId(out _))
             {
                 return Unauthorized();
             }
 
             var playerName = CurrentPlayerName();
+            var saveKey = CurrentAccountKey();
 
             try
             {
-                var state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.UserAccountId == userId);
+                var state = await FindPlayerState(saveKey, playerName);
 
                 if (state == null)
                 {
@@ -48,7 +49,7 @@ namespace KalapulgaMerge.Controllers
 
                 return Json(new
                 {
-                    playerName = state.PlayerName,
+                    playerName,
                     coins = state.Coins,
                     unlockedItems = state.UnlockedItemsJson,
                     activeEquipment = state.ActiveEquipmentJson,
@@ -64,24 +65,25 @@ namespace KalapulgaMerge.Controllers
         [HttpPost]
         public async Task<IActionResult> State([FromBody] MergeStateRequest request)
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!TryGetCurrentUserId(out _))
             {
                 return Unauthorized();
             }
 
             var playerName = CurrentPlayerName();
+            var saveKey = CurrentAccountKey();
 
             try
             {
-                var state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.UserAccountId == userId);
+                var state = await FindPlayerState(saveKey, playerName);
 
                 if (state == null)
                 {
-                    state = new MergePlayerState { UserAccountId = userId };
+                    state = new MergePlayerState { PlayerName = saveKey };
                     _context.MergePlayerStates.Add(state);
                 }
 
-                state.PlayerName = playerName;
+                state.PlayerName = saveKey;
                 state.Coins = request.Coins;
                 state.UnlockedItemsJson = string.IsNullOrWhiteSpace(request.UnlockedItems) ? DefaultUnlocked : request.UnlockedItems;
                 state.ActiveEquipmentJson = string.IsNullOrWhiteSpace(request.ActiveEquipment) ? DefaultEquipment : request.ActiveEquipment;
@@ -98,26 +100,65 @@ namespace KalapulgaMerge.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Score([FromBody] MergeScoreRequest request)
+        public async Task<IActionResult> Coins([FromBody] MergeCoinsRequest request)
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!TryGetCurrentUserId(out _))
             {
                 return Unauthorized();
             }
 
             var playerName = CurrentPlayerName();
+            var saveKey = CurrentAccountKey();
+
+            try
+            {
+                var state = await FindPlayerState(saveKey, playerName);
+
+                if (state == null)
+                {
+                    state = new MergePlayerState
+                    {
+                        PlayerName = saveKey,
+                        UnlockedItemsJson = DefaultUnlocked,
+                        ActiveEquipmentJson = DefaultEquipment,
+                        Theme = "original"
+                    };
+                    _context.MergePlayerStates.Add(state);
+                }
+
+                state.PlayerName = saveKey;
+                state.Coins = request.Coins < 0 ? 0 : request.Coins;
+                state.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+                return Json(new { saved = true, coins = state.Coins });
+            }
+            catch
+            {
+                return Json(new { saved = false });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Score([FromBody] MergeScoreRequest request)
+        {
+            if (!TryGetCurrentUserId(out _))
+            {
+                return Unauthorized();
+            }
+
+            var saveKey = CurrentAccountKey();
             var mode = string.IsNullOrWhiteSpace(request.Mode) ? "normal" : request.Mode;
 
             try
             {
-                var score = await _context.MergeScores.FirstOrDefaultAsync(x => x.UserAccountId == userId && x.Mode == mode);
+                var score = await _context.MergeScores.FirstOrDefaultAsync(x => x.PlayerName == saveKey && x.Mode == mode);
 
                 if (score == null)
                 {
                     score = new MergeScore
                     {
-                        UserAccountId = userId,
-                        PlayerName = playerName,
+                        PlayerName = saveKey,
                         Mode = mode,
                         Score = request.Score
                     };
@@ -126,7 +167,7 @@ namespace KalapulgaMerge.Controllers
                 }
                 else
                 {
-                    score.PlayerName = playerName;
+                    score.PlayerName = saveKey;
 
                     if (request.Score > score.Score)
                     {
@@ -153,10 +194,19 @@ namespace KalapulgaMerge.Controllers
                     .OrderByDescending(x => x.Score)
                     .ThenBy(x => x.CreatedAt)
                     .Take(10)
-                    .Select(x => new { name = x.PlayerName, score = x.Score })
                     .ToListAsync();
 
-                return Json(scores);
+                var userIds = scores
+                    .Select(x => int.TryParse(x.PlayerName, out var id) ? id : 0)
+                    .Where(x => x > 0)
+                    .Distinct()
+                    .ToList();
+
+                var names = await _context.UserAccounts
+                    .Where(x => userIds.Contains(x.Id))
+                    .ToDictionaryAsync(x => x.Id, x => x.Name);
+
+                return Json(scores.Select(x => new { name = ScoreName(x.PlayerName, names), score = x.Score }));
             }
             catch
             {
@@ -176,10 +226,38 @@ namespace KalapulgaMerge.Controllers
             };
         }
 
+        private async Task<MergePlayerState?> FindPlayerState(string saveKey, string playerName)
+        {
+            var state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.PlayerName == saveKey);
+
+            if (state == null && playerName != saveKey)
+            {
+                state = await _context.MergePlayerStates.FirstOrDefaultAsync(x => x.PlayerName == playerName);
+            }
+
+            return state;
+        }
+
+        private static string ScoreName(string key, Dictionary<int, string> names)
+        {
+            if (int.TryParse(key, out var id) && names.TryGetValue(id, out var name))
+            {
+                return name;
+            }
+
+            return key;
+        }
+
         private bool TryGetCurrentUserId(out int userId)
         {
             var userIdText = HttpContext.Session.GetString("UserId");
             return int.TryParse(userIdText, out userId);
+        }
+
+        private string CurrentAccountKey()
+        {
+            var userIdText = HttpContext.Session.GetString("UserId");
+            return string.IsNullOrWhiteSpace(userIdText) ? CurrentPlayerName() : userIdText.Trim();
         }
 
         private string CurrentPlayerName()
@@ -202,6 +280,11 @@ namespace KalapulgaMerge.Controllers
         public string UnlockedItems { get; set; } = string.Empty;
         public string ActiveEquipment { get; set; } = string.Empty;
         public string Theme { get; set; } = "original";
+    }
+
+    public class MergeCoinsRequest
+    {
+        public int Coins { get; set; }
     }
 
     public class MergeScoreRequest

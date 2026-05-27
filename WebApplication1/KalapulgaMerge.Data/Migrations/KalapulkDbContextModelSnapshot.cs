@@ -75,9 +75,6 @@ namespace KalapulgaMerge.Data.Migrations
                     b.Property<int>("Coins")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserAccountId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PlayerName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -97,7 +94,7 @@ namespace KalapulgaMerge.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserAccountId")
+                    b.HasIndex("PlayerName")
                         .IsUnique();
 
                     b.ToTable("MergePlayerStates");
@@ -127,12 +124,9 @@ namespace KalapulgaMerge.Data.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserAccountId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserAccountId", "Mode")
+                    b.HasIndex("PlayerName", "Mode")
                         .IsUnique();
 
                     b.ToTable("MergeScores");

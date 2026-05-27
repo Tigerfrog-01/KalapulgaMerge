@@ -3,7 +3,6 @@ namespace KalapulgaMerge.Core.Domain;
 public class MergePlayerState
 {
     public int Id { get; set; }
-    public int UserAccountId { get; set; }
     public string PlayerName { get; set; } = string.Empty;
     public int Coins { get; set; }
     public string UnlockedItemsJson { get; set; } = string.Empty;

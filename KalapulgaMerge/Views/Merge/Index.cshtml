@@ -606,7 +606,7 @@
 
 <script>
     let grid = Array(16).fill(null), score = 0, currentUser = "", gameMode = "normal", lockedIndex = -1, lockElement = null;
-    let coins = 0, selectedTheme = "original", stateSaveTimer = null, stateDirty = false;
+    let coins = 0, selectedTheme = "original", stateSaveTimer = null, coinSaveTimer = null, stateDirty = false;
     const accountName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(mergePlayerName));
     
     const shopItems = {
@@ -665,7 +665,7 @@
     function updateCurrency(amount) {
         coins += amount;
         coinText.innerText = coins;
-        queueStateSave();
+        queueCoinSave();
     }
     updateCurrency(0);
 
@@ -779,30 +779,59 @@
         stateSaveTimer = setTimeout(savePlayerState, 150);
     }
 
+    function queueCoinSave() {
+        if (!currentUser) return;
+        clearTimeout(coinSaveTimer);
+        coinSaveTimer = setTimeout(saveCoins, 150);
+    }
+
+    function postMergeJson(url, data, keepAlive = false) {
+        const body = JSON.stringify(data);
+
+        if (keepAlive && navigator.sendBeacon) {
+            navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+            return null;
+        }
+
+        return fetch(url, {
+            method: 'POST',
+            keepalive: keepAlive,
+            headers: { 'Content-Type': 'application/json' },
+            body
+        });
+    }
+
     async function savePlayerState(keepAlive = false) {
         if (!currentUser) return;
         clearTimeout(stateSaveTimer);
         stateSaveTimer = null;
         try {
-            const request = fetch('/Merge/State', {
-                method: 'POST',
-                keepalive: keepAlive,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    coins,
-                    unlockedItems: JSON.stringify(unlockedItems),
-                    activeEquipment: JSON.stringify(activeEquipment),
-                    theme: selectedTheme
-                })
-            });
-            if (!keepAlive) await request;
+            const request = postMergeJson('/Merge/State', {
+                coins,
+                unlockedItems: JSON.stringify(unlockedItems),
+                activeEquipment: JSON.stringify(activeEquipment),
+                theme: selectedTheme
+            }, keepAlive);
+            if (request && !keepAlive) await request;
             stateDirty = false;
+        } catch {
+        }
+    }
+
+    async function saveCoins(keepAlive = false) {
+        if (!currentUser) return;
+        clearTimeout(coinSaveTimer);
+        coinSaveTimer = null;
+        try {
+            const request = postMergeJson('/Merge/Coins', { coins }, keepAlive);
+            if (request && !keepAlive) await request;
         } catch {
         }
     }
 
     function saveBeforeLeaving() {
         if (stateDirty) savePlayerState(true);
+        saveCoins(true);
     }
 
     async function startGame() {
