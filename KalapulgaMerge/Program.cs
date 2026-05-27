@@ -1,4 +1,5 @@
 using KalapulgaMerge.ApplicationServices.Services;
+using KalapulgaMerge.Core.Domain;
 using KalapulgaMerge.Core.ServiceInterface;
 using KalapulgaMerge.Data;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,29 @@ namespace KalapulgaMerge
                 {
                     var db = scope.ServiceProvider.GetRequiredService<KalapulkDbContext>();
                     db.Database.Migrate();
+
+                    var adminByNewEmail = db.UserAccounts.FirstOrDefault(x => x.Email == "admin@admin");
+                    var adminByOldEmail = db.UserAccounts.FirstOrDefault(x => x.Email == "admin");
+                    var adminByName = db.UserAccounts.FirstOrDefault(x => x.Name == "admin");
+                    var admin = adminByNewEmail ?? adminByOldEmail ?? adminByName;
+
+                    if (admin == null)
+                    {
+                        db.UserAccounts.Add(new UserAccount
+                        {
+                            Name = "admin",
+                            Email = "admin@admin",
+                            Password = "admin"
+                        });
+                    }
+                    else
+                    {
+                        admin.Name = "admin";
+                        admin.Email = "admin@admin";
+                        admin.Password = "admin";
+                    }
+
+                    db.SaveChanges();
                 }
                 catch
                 {

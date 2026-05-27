@@ -13,13 +13,14 @@
 </head>
 <body class="app-shell">
     @{
-        var isAdmin = Context.Session.GetString("IsAdmin") == "true";
         var userId = Context.Session.GetString("UserId");
         var userName = Context.Session.GetString("UserName");
+        var userEmail = Context.Session.GetString("UserEmail");
         var profilePic = Context.Session.GetString("UserProfilePic");
         var isLoggedIn = !string.IsNullOrWhiteSpace(userId);
         var accountName = string.IsNullOrWhiteSpace(userName) ? "Account" : userName;
         var accountInitial = accountName.Substring(0, 1).ToUpper();
+        var isAdmin = userName == "admin" && userEmail == "admin@admin";
     }
     <header class="site-header">
         <nav class="navbar navbar-expand-lg app-navbar">
@@ -62,9 +63,6 @@
                                 </ul>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link auth-link auth-admin @(isAdmin ? "auth-admin-on" : "")" asp-area="" asp-controller="Accounts" asp-action="SwitchAdmin">@(isAdmin ? "Admin on" : "Admin")</a>
-                        </li>
                         @if (isLoggedIn)
                         {
                             <li class="nav-item">

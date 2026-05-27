@@ -111,11 +111,21 @@ namespace KalapulgaMerge.Controllers
             email = email?.Trim() ?? "";
             password ??= "";
 
-            UserAccount? user;
+            UserAccount? user = null;
 
             try
             {
-                user = await _context.UserAccounts.FirstOrDefaultAsync(u => u.Email == email);
+                if (email == "admin" || email == "admin@admin")
+                {
+                    user = await _context.UserAccounts.FirstOrDefaultAsync(u => u.Name == "admin" && u.Email == "admin@admin");
+                }
+
+                user ??= await _context.UserAccounts.FirstOrDefaultAsync(u => u.Email == email);
+
+                if (user == null)
+                {
+                    user = await _context.UserAccounts.FirstOrDefaultAsync(u => u.Name == email);
+                }
             }
             catch
             {
@@ -141,8 +151,6 @@ namespace KalapulgaMerge.Controllers
 
         public IActionResult SwitchAdmin()
         {
-            var isAdmin = IsAdmin();
-            HttpContext.Session.SetString("IsAdmin", isAdmin ? "false" : "true");
             return RedirectToAction("Index", "Home");
         }
 
@@ -385,6 +393,7 @@ namespace KalapulgaMerge.Controllers
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserEmail", user.Email);
             HttpContext.Session.SetString("UserName", user.Name);
+            HttpContext.Session.SetString("IsAdmin", IsAdminAccount(user) ? "true" : "false");
 
             if (!string.IsNullOrWhiteSpace(user.ProfilePicPath))
             {
@@ -398,12 +407,17 @@ namespace KalapulgaMerge.Controllers
 
         private bool IsAdmin()
         {
-            return HttpContext.Session.GetString("IsAdmin") == "true";
+            return HttpContext.Session.GetString("UserName") == "admin" && HttpContext.Session.GetString("UserEmail") == "admin@admin";
         }
 
         private bool IsLoggedIn()
         {
             return !string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserId"));
+        }
+
+        private static bool IsAdminAccount(UserAccount user)
+        {
+            return user.Name == "admin" && user.Email == "admin@admin" && user.Password == "admin";
         }
     }
 }
