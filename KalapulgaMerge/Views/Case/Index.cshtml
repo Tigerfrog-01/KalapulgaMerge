@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<KalapulgaMerge.Models.Case.CaseIndexViewModel>
 @{
     ViewData["Title"] = "Cases";
+    int rowNumber = 1;
 }
 
 <section class="admin-users-page">
@@ -70,6 +71,8 @@
         <table>
             <thead>
                 <tr>
+
+                    <th scope="col">#</th>
                     <th>Case ID</th>
                     <th>User ID</th>
                     <th>Description</th>
@@ -81,11 +84,13 @@
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <td>@rowNumber</td>
                         <td>@item.CaseID</td>
                         <td>@item.UserID</td>
                         <td>@item.Description</td>
                         <td>@item.CurrentCaseStatus</td>
                         <td>
+
                             <div class="admin-table-actions">
                                 <a asp-action="Update" asp-route-id="@item.CaseID" class="btn btn-outline-primary btn-sm">Update</a>
                                 <form asp-action="DeleteConfirmed" asp-route-caseID="@item.CaseID" method="post" class="admin-row-form" style="display:inline;">
@@ -93,7 +98,9 @@
                                 </form>
                             </div>
                         </td>
+
                     </tr>
+                    rowNumber += 1;
                 }
             </tbody>
         </table>
