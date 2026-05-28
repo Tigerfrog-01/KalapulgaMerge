@@ -1,44 +1,103 @@
 ﻿@model IEnumerable<KalapulgaMerge.Models.Case.CaseIndexViewModel>
-
 @{
-    ViewData["Title"] = "Juhtumid";
+    ViewData["Title"] = "Cases";
     int rowNumber = 1;
 }
 
-<div class="container py-4" style="font-family: sans-serif;">
+<section class="admin-users-page">
+    <div class="admin-users-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="shop-eyebrow">Admin</span>
+            <h1>Cases</h1>
+        </div>
+
+   
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('filter-dropdown').classList.toggle('d-none')">
+            Filter Options
+        </button>
+    </div>
+
     <div>
         <a asp-action="Create" asp-controller="Case" class="btn btn-primary">Lisa Juhtum</a>
     </div>
+    <div id="filter-dropdown" class="d-none" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <form asp-action="Index" method="get" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+            
 
-    <div class="h1 my-3">Juhtumid</div>
+            <div>
+                <label style="font-size: 14px; font-weight: bold;">Case ID</label>
+                <input type="text" name="searchCaseId" value="@ViewBag.SearchCaseId" list="caseIdList" class="form-control" placeholder="Search or select..." autocomplete="off" />
+                <datalist id="caseIdList">
+                    @if (ViewBag.AllCaseIds != null) {
+                        foreach (var id in ViewBag.AllCaseIds) {
+                            <option value="@id"></option>
+                        }
+                    }
+                </datalist>
+            </div>
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Juhtumi ID</th>
-                <th scope="col">Kasutaja ID</th>
-                <th scope="col">Kirjeldus</th>
-                <th scope="col">Staatus</th>
-                <th scope="col">Tööriistad</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+
+            <div>
+                <label style="font-size: 14px; font-weight: bold;">User ID</label>
+                <input type="text" name="searchUserId" value="@ViewBag.SearchUserId" list="userIdList" class="form-control" placeholder="Search or select..." autocomplete="off" />
+                <datalist id="userIdList">
+                    @if (ViewBag.AllUserIds != null) {
+                        foreach (var id in ViewBag.AllUserIds) {
+                            <option value="@id"></option>
+                        }
+                    }
+                </datalist>
+            </div>
+
+
+            <div>
+                <label style="font-size: 14px; font-weight: bold;">Status</label>
+                <select name="searchStatus" class="form-control">
+                    <option value="">-- All --</option>
+                    <option value="0" selected="@(ViewBag.SearchStatus == 0 ? "selected" : null)">Solved</option>
+                    <option value="1" selected="@(ViewBag.SearchStatus == 1 ? "selected" : null)">InProgress</option>
+                    <option value="2" selected="@(ViewBag.SearchStatus == 2 ? "selected" : null)">Awaiting</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="admin-users-table">
+        <table>
+            <thead>
                 <tr>
-                    <td>@rowNumber</td>
-                    <td>@item.CaseID</td>
-                    <td>@item.UserID</td>
-                    <td>@item.Description</td>
-                    <td>@item.CurrentCaseStatus</td>
-                    <td>
-                        <a asp-action="Update" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-primary btn-sm">Uuenda</a>
-                        <a asp-action="Delete" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-outline-danger btn-sm">Eemalda</a>
-                    </td>
+
+                    <th scope="col">#</th>
+                    <th>Case ID</th>
+                    <th>User ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-                rowNumber += 1;
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@rowNumber</td>
+                        <td>@item.CaseID</td>
+                        <td>@item.UserID</td>
+                        <td>@item.Description</td>
+                        <td>@item.CurrentCaseStatus</td>
+                        <td>
+                            <a asp-action="Update" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-primary btn-sm">Uuenda</a>
+                            <a asp-action="Delete" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-outline-danger btn-sm">Eemalda</a>
+                        </td>
+
+                    </tr>
+                    rowNumber += 1;
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
