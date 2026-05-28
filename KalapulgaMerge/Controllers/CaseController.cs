@@ -25,18 +25,44 @@ namespace KalapulgaMerge.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchCaseId, string searchUserId, int? searchStatus)
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
 
             var dtos = await _caseService.GetCasesAsync();
+
+            ViewBag.AllCaseIds = dtos.Select(x => x.CaseID.ToString()).Distinct().ToList();
+            ViewBag.AllUserIds = dtos.Select(x => x.UserID.ToString()).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+
+
+            if (!string.IsNullOrWhiteSpace(searchCaseId))
+            {
+                dtos = dtos.Where(x => x.CaseID.ToString().Contains(searchCaseId, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchUserId))
+            {
+                dtos = dtos.Where(x => x.UserID != null && x.UserID.ToString().Contains(searchUserId, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (searchStatus.HasValue)
+            {
+                dtos = dtos.Where(x => (int)x.CurrentCaseStatus == searchStatus.Value);
+            }
             var vms = dtos.Select(x => new CaseIndexViewModel
             {
                 CaseID = x.CaseID,
                 UserID = x.UserID,
                 Description = x.Description,
                 CurrentCaseStatus = x.CurrentCaseStatus
+
+
+
             });
+
+            ViewBag.SearchCaseId = searchCaseId;
+            ViewBag.SearchUserId = searchUserId;
+            ViewBag.SearchStatus = searchStatus;
 
             return View(vms);
         }
