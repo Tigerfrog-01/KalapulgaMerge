@@ -16,10 +16,19 @@ namespace KalapulgaMerge.Controllers
         {
             _caseService = caseService;
         }
+        private bool IsAdmin()
+        {
+            bool isLoggedIn = !string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserId"));
+            bool isAdmin = HttpContext.Session.GetString("UserName") == "admin" && HttpContext.Session.GetString("UserEmail") == "admin@admin";
+
+            return isLoggedIn && isAdmin;
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             var dtos = await _caseService.GetCasesAsync();
             var vms = dtos.Select(x => new CaseIndexViewModel
             {
@@ -34,6 +43,8 @@ namespace KalapulgaMerge.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             return View(new CaseCreateViewModel());
         }
 
@@ -41,6 +52,8 @@ namespace KalapulgaMerge.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CaseCreateViewModel vm)
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             if (!ModelState.IsValid) return View(vm);
 
             var dto = new CaseDTO
@@ -58,6 +71,8 @@ namespace KalapulgaMerge.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             var dto = await _caseService.GetCaseByIdAsync(id);
             if (dto == null) return NotFound();
 
@@ -76,6 +91,8 @@ namespace KalapulgaMerge.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(CaseUpdateViewModel vm)
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             if (!ModelState.IsValid) return View(vm);
 
             var dto = new CaseDTO
@@ -94,6 +111,8 @@ namespace KalapulgaMerge.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             var dto = await _caseService.GetCaseByIdAsync(id);
             if (dto == null) return NotFound();
 
@@ -112,6 +131,8 @@ namespace KalapulgaMerge.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid caseID)
         {
+            if (!IsAdmin()) return RedirectToAction("Login", "Accounts");
+
             await _caseService.DeleteAsync(caseID);
             return RedirectToAction(nameof(Index));
         }
