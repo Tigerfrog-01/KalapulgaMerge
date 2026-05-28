@@ -609,25 +609,25 @@
     let coins = 0, selectedTheme = "original", stateSaveTimer = null, coinSaveTimer = null, stateDirty = false;
     const accountName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(mergePlayerName));
     
-    const shopItems = {
-        colour: [
-            { id: 'stick', name: 'Fish Stick', price: 0, img: 'https://png.pngtree.com/png-vector/20240103/ourmid/pngtree-fish-stick-on-a-white-background-breaded-png-image_10938833.png' },
-            { id: 'ice', name: 'Ice Stick', price: 25, img: 'ice-stick.png' },
-            { id: 'spicy', name: 'Spicy Stick', price: 50, img: 'hot-stick.png' },
-            { id: 'gold', name: 'Golden Stick', price: 1000, img: 'gold-stick.png' }
-        ],
-        head: [
-            { id: 'head-none', name: 'None', price: 0, img: '' },
-            { id: 'cat', name: 'Cat-Ears', price: 25, img: 'cat-pulk.png' },
-            { id: 'tophat', name: 'tophat', price: 50, img: 'top-pulk.png' }
-        ],
-        body: [
-            { id: 'body-none', name: 'None', price: 0, img: '' },
-            { id: 'bow', name: 'bowtie', price: 10, img: 'bow-stick.png' },
-             { id: 'donut', name: 'donut', price: 10, img: 'donut-pulk.png' }
+                                                                            const shopItems = {
+                                                                                colour: [
+                                                                                    { id: 'stick', name: 'Fish Stick', price: 0, img: 'https://png.pngtree.com/png-vector/20240103/ourmid/pngtree-fish-stick-on-a-white-background-breaded-png-image_10938833.png' },
+                                                                                    { id: 'ice', name: 'Ice Stick', price: 25, img: 'ice-stick.png' },
+                                                                                    { id: 'spicy', name: 'Spicy Stick', price: 50, img: 'hot-stick.png' },
+                                                                                    { id: 'gold', name: 'Golden Stick', price: 1000, img: 'gold-stick.png' }
+                                                                                ],
+                                                                                head: [
+                                                                                    { id: 'head-none', name: 'None', price: 0, img: '' },
+                                                                                    { id: 'cat', name: 'Cat-Ears', price: 25, img: 'cat-pulk.png' },
+                                                                                    { id: 'tophat', name: 'tophat', price: 50, img: 'top-pulk.png' }
+                                                                                ],
+                                                                                body: [
+                                                                                    { id: 'body-none', name: 'None', price: 0, img: '' },
+                                                                                    { id: 'bow', name: 'bowtie', price: 10, img: 'bow-stick.png' },
+                                                                                     { id: 'donut', name: 'donut', price: 10, img: 'donut-pulk.png' }
            
-        ]
-    };
+                                                                                ]
+                                                                            };
 
     let unlockedItems = ['stick', 'head-none', 'body-none'];
     let activeEquipment = { colour: 'stick', head: 'head-none', body: 'body-none' };
