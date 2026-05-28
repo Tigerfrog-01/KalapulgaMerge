@@ -90,13 +90,8 @@
                         <td>@item.Description</td>
                         <td>@item.CurrentCaseStatus</td>
                         <td>
-
-                            <div class="admin-table-actions">
-                                <a asp-action="Update" asp-route-id="@item.CaseID" class="btn btn-outline-primary btn-sm">Update</a>
-                                <form asp-action="DeleteConfirmed" asp-route-caseID="@item.CaseID" method="post" class="admin-row-form" style="display:inline;">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-                                </form>
-                            </div>
+                            <a asp-action="Update" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-primary btn-sm">Uuenda</a>
+                            <a asp-action="Delete" asp-controller="Case" asp-route-id="@item.CaseID" class="btn btn-outline-danger btn-sm">Eemalda</a>
                         </td>
 
                     </tr>
