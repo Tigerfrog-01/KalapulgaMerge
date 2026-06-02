@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Open a Case";
+}
+
+<section style="max-width: 600px; margin: 40px auto; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+    <h2>Report a Problem</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        </div>
+    }
+
+    <form asp-action="OpenCase" method="post">
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="description" style="font-weight: bold; margin-bottom: 8px; display: block;">
+                Explain problem:
+            </label>
+            <textarea id="description"
+                      name="description"
+                      class="form-control"
+                      rows="6"
+                      placeholder="Describe the issue you are facing in detail."
+                      required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Submit Case
+        </button>
+    </form>
+</section>
