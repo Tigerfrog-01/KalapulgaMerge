@@ -154,30 +154,61 @@ namespace KalapulgaMerge.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> Users(string search)
+        public async Task<IActionResult> Users(string? search, string? nameSearch, string? emailSearch, string? createdSearch)
         {
             if (!IsAdmin())
             {
                 return RedirectToAction("Login");
             }
 
+            nameSearch = string.IsNullOrWhiteSpace(nameSearch) ? search : nameSearch;
+            nameSearch = nameSearch?.Trim() ?? "";
+            emailSearch = emailSearch?.Trim() ?? "";
+            createdSearch = createdSearch?.Trim() ?? "";
+
             var query = _context.UserAccounts.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(nameSearch))
             {
-                query = query.Where(u => u.Name.Contains(search));
+                query = query.Where(u => u.Name.Contains(nameSearch));
             }
 
-            ViewBag.Search = search;
+            if (!string.IsNullOrWhiteSpace(emailSearch))
+            {
+                query = query.Where(u => u.Email.Contains(emailSearch));
+            }
+
+            if (!string.IsNullOrWhiteSpace(createdSearch))
+            {
+                if (DateTime.TryParse(createdSearch, out var createdDate))
+                {
+                    var startDate = createdDate.Date;
+                    var endDate = startDate.AddDays(1);
+                    query = query.Where(u => u.CreatedAt >= startDate && u.CreatedAt < endDate);
+                }
+                else
+                {
+                    ViewBag.DateError = "Use a valid created date";
+                }
+            }
+
+            ViewBag.Search = nameSearch;
+            ViewBag.NameSearch = nameSearch;
+            ViewBag.EmailSearch = emailSearch;
+            ViewBag.CreatedSearch = createdSearch;
 
             try
             {
-                var users = await query.OrderBy(u => u.Name).ToListAsync();
+                ViewBag.TotalUsers = await _context.UserAccounts.CountAsync();
+                var users = await query.OrderByDescending(u => u.CreatedAt).ThenBy(u => u.Name).ToListAsync();
+                ViewBag.ShownUsers = users.Count;
                 return View(users);
             }
             catch
             {
                 ViewBag.Error = "Database is not available";
+                ViewBag.TotalUsers = 0;
+                ViewBag.ShownUsers = 0;
                 return View(new List<UserAccount>());
             }
         }
