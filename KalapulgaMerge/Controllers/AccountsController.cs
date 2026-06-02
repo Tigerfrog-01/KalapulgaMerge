@@ -295,6 +295,14 @@ namespace KalapulgaMerge.Controllers
                 return RedirectToAction("Login");
             }
 
+          
+            var currentAdminId = HttpContext.Session.GetString("UserId");
+            if (currentAdminId == id.ToString())
+            {
+                TempData["Error"] = "You cannot delete your own admin account";
+                return RedirectToAction("Users");
+            }
+
             UserAccount? user;
 
             try
@@ -321,6 +329,7 @@ namespace KalapulgaMerge.Controllers
                 return RedirectToAction("Users");
             }
 
+         
             if (HttpContext.Session.GetString("UserId") == user.Id.ToString())
             {
                 HttpContext.Session.Clear();
