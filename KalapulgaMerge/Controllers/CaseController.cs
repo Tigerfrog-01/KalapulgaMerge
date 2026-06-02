@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using KalapulgaMerge.Core.Domain;
 using KalapulgaMerge.Core.Dto;
 using KalapulgaMerge.Core.ServiceInterface;
 using KalapulgaMerge.Models.Case;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace KalapulgaMerge.Controllers
 {
@@ -22,6 +24,46 @@ namespace KalapulgaMerge.Controllers
             bool isAdmin = HttpContext.Session.GetString("UserName") == "admin" && HttpContext.Session.GetString("UserEmail") == "admin@admin";
 
             return isLoggedIn && isAdmin;
+        }
+        private bool IsLoggedIn()
+        {
+            return !string.IsNullOrWhiteSpace(HttpContext.Session.GetString("UserId"));
+        }
+        [HttpGet]
+        public IActionResult OpenCase()
+        {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Accounts");
+
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OpenCase(string description)
+        {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Accounts");
+
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                ModelState.AddModelError("", "Please provide a description of the problem.");
+                return View();
+            }
+
+            if (!int.TryParse(HttpContext.Session.GetString("UserId"), out int userId))
+            {
+                return RedirectToAction("Login", "Accounts");
+            }
+
+            var dto = new CaseDTO
+            {
+                CaseID = Guid.NewGuid(),
+                UserID = userId,
+                Description = description,
+                CurrentCaseStatus = (CaseStatus)2 // Forces status
+            };
+
+            await _caseService.CreateAsync(dto);
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

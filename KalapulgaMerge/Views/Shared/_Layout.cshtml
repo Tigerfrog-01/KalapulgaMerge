@@ -66,6 +66,9 @@
                         @if (isLoggedIn)
                         {
                             <li class="nav-item">
+                                <a class="nav-link auth-link" asp-area="" asp-controller="Case" asp-action="OpenCase">Report</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link auth-link nav-profile" asp-area="" asp-controller="Accounts" asp-action="Index">
                                     @if (!string.IsNullOrWhiteSpace(profilePic))
                                     {
