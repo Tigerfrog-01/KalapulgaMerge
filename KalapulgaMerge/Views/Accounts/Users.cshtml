@@ -1,6 +1,11 @@
 @model IEnumerable<KalapulgaMerge.Core.Domain.UserAccount>
 @{
     ViewData["Title"] = "Users";
+    var nameSearch = ViewBag.NameSearch as string;
+    var emailSearch = ViewBag.EmailSearch as string;
+    var createdSearch = ViewBag.CreatedSearch as string;
+    var shownUsers = ViewBag.ShownUsers ?? Model.Count();
+    var totalUsers = ViewBag.TotalUsers ?? shownUsers;
 }
 
 <section class="admin-users-page">
@@ -9,16 +14,46 @@
             <span class="shop-eyebrow">Admin</span>
             <h1>Users</h1>
         </div>
-        <form asp-action="Users" method="get" class="admin-search-form">
-            <input type="text" name="search" value="@ViewBag.Search" placeholder="Filter by name" />
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </form>
+        <div class="admin-stat-row">
+            <div class="admin-stat">
+                <span>Total</span>
+                <strong>@totalUsers</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Shown</span>
+                <strong>@shownUsers</strong>
+            </div>
+        </div>
     </div>
 
     @if (ViewBag.Error != null)
     {
-        <p class="text-danger">@ViewBag.Error</p>
+        <p class="admin-alert">@ViewBag.Error</p>
     }
+
+    @if (ViewBag.DateError != null)
+    {
+        <p class="admin-alert">@ViewBag.DateError</p>
+    }
+
+    <form asp-action="Users" method="get" class="admin-search-form">
+        <label class="admin-filter-field">
+            <span>User</span>
+            <input type="text" name="nameSearch" value="@nameSearch" placeholder="Search users" />
+        </label>
+        <label class="admin-filter-field">
+            <span>Email</span>
+            <input type="text" name="emailSearch" value="@emailSearch" placeholder="Search emails" />
+        </label>
+        <label class="admin-filter-field">
+            <span>Created</span>
+            <input type="date" name="createdSearch" value="@createdSearch" />
+        </label>
+        <div class="admin-search-actions">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a asp-action="Users" class="btn btn-outline-secondary">Clear</a>
+        </div>
+    </form>
 
     <div class="admin-users-table">
         <table>
@@ -31,27 +66,42 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in Model)
+                @if (!Model.Any())
                 {
                     <tr>
-                        <td>@user.Name</td>
-                        <td>@user.Email</td>
-                        <td>@user.CreatedAt.ToString("yyyy-MM-dd")</td>
-                        <td>
-                            <div class="admin-table-actions">
-                                <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">Update</a>
-        
-                                
-                                @if (Context.Session.GetString("UserId") != user.Id.ToString())
-                                {
-                                    <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post" class="admin-row-form"
-                                          onsubmit="return confirm('Are you sure you want to permanently delete @user.Name? This action cannot be undone');">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-                                    </form>
-                                }
-                            </div>
-                        </td>
+                        <td colspan="4" class="admin-empty-cell">No users found</td>
                     </tr>
+                }
+                else
+                {
+                    @foreach (var user in Model)
+                    {
+                        var displayName = string.IsNullOrWhiteSpace(user.Name) ? "User" : user.Name;
+                        var initial = displayName.Substring(0, 1).ToUpper();
+
+                        <tr>
+                            <td>
+                                <div class="admin-user-cell">
+                                    <span class="admin-user-avatar">@initial</span>
+                                    <span>@displayName</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-email-cell">@user.Email</span></td>
+                            <td><span class="admin-date-badge">@user.CreatedAt.ToString("yyyy-MM-dd")</span></td>
+                            <td>
+                                <div class="admin-table-actions">
+                                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">Update</a>
+                                    @if (Context.Session.GetString("UserId") != user.Id.ToString())
+                                    {
+                                        <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post" class="admin-row-form"
+                                              onsubmit="return confirm('Are you sure you want to permanently delete @displayName? This action cannot be undone');">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
