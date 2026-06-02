@@ -4,8 +4,17 @@
     var nameSearch = ViewBag.NameSearch as string;
     var emailSearch = ViewBag.EmailSearch as string;
     var createdSearch = ViewBag.CreatedSearch as string;
+    var showKey = ViewBag.ShowKey as string ?? "auto";
+    var viewKey = ViewBag.ViewKey as string ?? "all";
+    var showName = viewKey == "all" || viewKey == "name";
+    var showEmail = viewKey == "all" || viewKey == "email";
+    var showCreated = viewKey == "all" || viewKey == "created";
+    var columnCount = 1;
     var shownUsers = ViewBag.ShownUsers ?? Model.Count();
     var totalUsers = ViewBag.TotalUsers ?? shownUsers;
+    columnCount += showName ? 1 : 0;
+    columnCount += showEmail ? 1 : 0;
+    columnCount += showCreated ? 1 : 0;
 }
 
 <section class="admin-users-page">
@@ -49,6 +58,16 @@
             <span>Created</span>
             <input type="date" name="createdSearch" value="@createdSearch" />
         </label>
+        <label class="admin-filter-field">
+            <span>Show</span>
+            <select name="showKey">
+                <option value="auto" selected="@(showKey == "auto")">Auto</option>
+                <option value="all" selected="@(showKey == "all")">All</option>
+                <option value="name" selected="@(showKey == "name")">User</option>
+                <option value="email" selected="@(showKey == "email")">Email</option>
+                <option value="created" selected="@(showKey == "created")">Created</option>
+            </select>
+        </label>
         <div class="admin-search-actions">
             <button type="submit" class="btn btn-primary">Filter</button>
             <a asp-action="Users" class="btn btn-outline-secondary">Clear</a>
@@ -59,9 +78,18 @@
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Created</th>
+                    @if (showName)
+                    {
+                        <th>Name</th>
+                    }
+                    @if (showEmail)
+                    {
+                        <th>Email</th>
+                    }
+                    @if (showCreated)
+                    {
+                        <th>Created</th>
+                    }
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -69,7 +97,7 @@
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="4" class="admin-empty-cell">No users found</td>
+                        <td colspan="@columnCount" class="admin-empty-cell">No users found</td>
                     </tr>
                 }
                 else
@@ -80,14 +108,23 @@
                         var initial = displayName.Substring(0, 1).ToUpper();
 
                         <tr>
-                            <td>
-                                <div class="admin-user-cell">
-                                    <span class="admin-user-avatar">@initial</span>
-                                    <span>@displayName</span>
-                                </div>
-                            </td>
-                            <td><span class="admin-email-cell">@user.Email</span></td>
-                            <td><span class="admin-date-badge">@user.CreatedAt.ToString("yyyy-MM-dd")</span></td>
+                            @if (showName)
+                            {
+                                <td>
+                                    <div class="admin-user-cell">
+                                        <span class="admin-user-avatar">@initial</span>
+                                        <span>@displayName</span>
+                                    </div>
+                                </td>
+                            }
+                            @if (showEmail)
+                            {
+                                <td><span class="admin-email-cell">@user.Email</span></td>
+                            }
+                            @if (showCreated)
+                            {
+                                <td><span class="admin-date-badge">@user.CreatedAt.ToString("yyyy-MM-dd")</span></td>
+                            }
                             <td>
                                 <div class="admin-table-actions">
                                     <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-outline-primary btn-sm">Update</a>

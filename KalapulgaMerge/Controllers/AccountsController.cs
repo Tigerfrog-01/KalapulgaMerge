@@ -154,7 +154,7 @@ namespace KalapulgaMerge.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> Users(string? search, string? nameSearch, string? emailSearch, string? createdSearch)
+        public async Task<IActionResult> Users(string? search, string? nameSearch, string? emailSearch, string? createdSearch, string? showKey)
         {
             if (!IsAdmin())
             {
@@ -165,6 +165,40 @@ namespace KalapulgaMerge.Controllers
             nameSearch = nameSearch?.Trim() ?? "";
             emailSearch = emailSearch?.Trim() ?? "";
             createdSearch = createdSearch?.Trim() ?? "";
+            showKey = showKey?.Trim().ToLower() ?? "auto";
+
+            if (showKey != "auto" && showKey != "all" && showKey != "name" && showKey != "email" && showKey != "created")
+            {
+                showKey = "auto";
+            }
+
+            var activeFilters = 0;
+            var autoKey = "all";
+
+            if (!string.IsNullOrWhiteSpace(nameSearch))
+            {
+                activeFilters++;
+                autoKey = "name";
+            }
+
+            if (!string.IsNullOrWhiteSpace(emailSearch))
+            {
+                activeFilters++;
+                autoKey = "email";
+            }
+
+            if (!string.IsNullOrWhiteSpace(createdSearch))
+            {
+                activeFilters++;
+                autoKey = "created";
+            }
+
+            var viewKey = showKey == "auto" && activeFilters == 1 ? autoKey : showKey;
+
+            if (viewKey == "auto")
+            {
+                viewKey = "all";
+            }
 
             var query = _context.UserAccounts.AsQueryable();
 
@@ -196,6 +230,8 @@ namespace KalapulgaMerge.Controllers
             ViewBag.NameSearch = nameSearch;
             ViewBag.EmailSearch = emailSearch;
             ViewBag.CreatedSearch = createdSearch;
+            ViewBag.ShowKey = showKey;
+            ViewBag.ViewKey = viewKey;
 
             try
             {
